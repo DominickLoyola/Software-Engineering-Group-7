@@ -4,14 +4,13 @@ Professor: Srimathi Srinivasan
 # Team Details:
 
 Team #7
-
-Team Name: Team #7
+Team Name: Moodify
 
 Team Names: 
 
 - 
 - 
-- 
+- Rishna Renikunta
 - Dominick Loyola
 - Nadhif Mahmood
 - 
