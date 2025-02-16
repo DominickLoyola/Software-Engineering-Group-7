@@ -10,7 +10,7 @@ Team Name: Moodify
 
 Team Names: 
 
-- 
+- Aman Deva
 - 
 - Rishna Renikunta
 - Dominick Loyola
