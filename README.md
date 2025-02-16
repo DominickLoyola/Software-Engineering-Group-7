@@ -15,7 +15,7 @@ Team Names:
 - Rishna Renikunta
 - Dominick Loyola
 - Nadhif Mahmood
-- 
+- Pranava Ravindran
 - 
 - 
 
