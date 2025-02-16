@@ -16,7 +16,7 @@ Team Names:
 - Dominick Loyola
 - Nadhif Mahmood
 - Pranava Ravindran
-- 
+- Omar Abubeker
 - 
 
 Statement of Work:
