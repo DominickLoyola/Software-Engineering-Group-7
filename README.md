@@ -11,7 +11,7 @@ Team Name: Moodify
 Team Names: 
 
 - Aman Deva
-- 
+- Chris Kennedy
 - Rishna Renikunta
 - Dominick Loyola
 - Nadhif Mahmood
