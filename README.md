@@ -17,7 +17,7 @@ Team Names:
 - Nadhif Mahmood
 - Pranava Ravindran
 - Omar Abubeker
-- 
+- Afiya Syed
 
 Statement of Work:
 
