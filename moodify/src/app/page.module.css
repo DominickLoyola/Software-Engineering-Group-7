@@ -1,37 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Actor&family=Cambo&display=swap');
+
 .page {
-  --gray-rgb: 0, 0, 0;
-  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
-  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
-  align-items: center;
-  justify-items: center;
-  min-height: 100svh;
-  padding: 80px;
-  gap: 64px;
-  font-family: var(--font-geist-sans);
-}
-
-@media (prefers-color-scheme: dark) {
-  .page {
-    --gray-rgb: 255, 255, 255;
-    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
-    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-  }
+  background-color: #FBFEF4;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
 }
 
 .main {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  grid-row-start: 2;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  margin-top: -150px;
+}
+
+.getStartedButton {
+  background-color: #69B578;
+  color: #FBFEF4;
+  padding:25px 60px;
+  font-size:2rem;
+  font-family: 'Actor', sans-serif;
+  font-weight: bold;
+  border-radius: 38px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
+  margin-top: 120px;
+}
+
+.getStartedButton:hover {
+  background-color: #5a9e68;
+}
+
+.getStartedButton:active {
+  transform: scale(0.98);
+}
+
+
+.slogan {
+  font-family: 'Cambo', sans-serif;
+  font-weight:550;
+  margin-top: -90px;
+  color: #254D32;
+  font-size:1.7rem;
+  margin-left: 130px;
 }
 
 .main ol {
