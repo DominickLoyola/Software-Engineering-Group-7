@@ -37,6 +37,13 @@ a {
   text-decoration: none;
 }
 
+
+h1 {
+  font-family: 'Cambo', sans-serif;
+  font-size: 3rem;
+}
+
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

@@ -14,7 +14,7 @@ export default function Home() {
         height={400}
           />
       <p className={styles.slogan}>Tune into your feelings</p>
-      <Link className={styles.getStartedButton} href="/dashboard">
+      <Link className={styles.getStartedButton} href="/login">
         Get Started
       </Link>
     </main>
