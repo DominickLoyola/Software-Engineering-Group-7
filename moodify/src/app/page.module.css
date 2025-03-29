@@ -1,140 +1,168 @@
-@import url('https://fonts.googleapis.com/css2?family=Actor&family=Cambo&display=swap');
-
 .page {
-  background-color: #FBFEF4;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  overflow: auto;
-  display: flex;
-  justify-content: center;
+  --gray-rgb: 0, 0, 0;
+  --gray-alpha-200: rgba(var(--gray-rgb), 0.08);
+  --gray-alpha-100: rgba(var(--gray-rgb), 0.05);
+
+  --button-primary-hover: #383838;
+  --button-secondary-hover: #f2f2f2;
+
+  display: grid;
+  grid-template-rows: 20px 1fr 20px;
+  align-items: center;
+  justify-items: center;
+  min-height: 100svh;
+  padding: 80px;
+  gap: 64px;
+  font-family: var(--font-geist-sans);
 }
 
-.pageGreen {
-  background-color: #69B578;;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  overflow: auto;
-  display: flex;
-  justify-content: center;
+@media (prefers-color-scheme: dark) {
+  .page {
+    --gray-rgb: 255, 255, 255;
+    --gray-alpha-200: rgba(var(--gray-rgb), 0.145);
+    --gray-alpha-100: rgba(var(--gray-rgb), 0.06);
+
+    --button-primary-hover: #ccc;
+    --button-secondary-hover: #1a1a1a;
+  }
 }
 
 .main {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  gap: 32px;
+  grid-row-start: 2;
 }
 
-.logo {
-  margin-top: -150px;
+.main ol {
+  font-family: var(--font-geist-mono);
+  padding-left: 0;
+  margin: 0;
+  font-size: 14px;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  list-style-position: inside;
 }
 
-.getStartedButton {
-  background-color: #69B578;
-  color: #FBFEF4;
-  padding:25px 60px;
-  font-size:2rem;
-  font-family: 'Actor', sans-serif;
-  font-weight: bold;
-  border-radius: 38px;
-  text-align: center;
+.main li:not(:last-of-type) {
+  margin-bottom: 8px;
+}
+
+.main code {
+  font-family: inherit;
+  background: var(--gray-alpha-100);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.ctas {
+  display: flex;
+  gap: 16px;
+}
+
+.ctas a {
+  appearance: none;
+  border-radius: 128px;
+  height: 48px;
+  padding: 0 20px;
+  border: none;
+  border: 1px solid transparent;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
   cursor: pointer;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
-  margin-top: 120px;
-}
-
-.getStartedButton:hover {
-  background-color: #5a9e68;
-}
-
-.getStartedButton:active {
-  transform: scale(0.98);
-}
-
-.slogan {
-  font-family: 'Cambo', sans-serif;
-  font-weight:550;
-  margin-top: -90px;
-  color: #254D32;
-  font-size:1.7rem;
-  margin-left: 130px;
-}
-
-.userAuth {
-  background-color: #fefef4;
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  width: 670px;
-  height: 670px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.form {
-  font-family: 'Actor', sans-serif;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height:100%;
-  width: 100%;
-  gap: 60px;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
 }
 
-.inputSet {
+a.primary {
+  background: var(--foreground);
+  color: var(--background);
+  gap: 8px;
+}
+
+a.secondary {
+  border-color: var(--gray-alpha-200);
+  min-width: 180px;
+}
+
+.footer {
+  grid-row-start: 3;
   display: flex;
-  flex-direction: column;
+  gap: 24px;
 }
 
-.accountDescription {
-  font-family: 'Actor', sans-serif;
-  color: #fefef4;
-  font-size:1.6rem;
-  margin-top: 30px;
+.footer a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.input {
-  padding: 10px 14px;
-  margin-top: 8px;
-  border: 3.5px solid #181D27;
-  background-color: #fefef4;
-  border-radius: 15px;
-  font-size: 1rem;
-  width: 508px;
-  height: 60px;
-  color: #254D32;
-  font-family: 'Actor', sans-serif;
-  outline: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+.footer img {
+  flex-shrink: 0;
 }
 
-.loginSignupButton {
-  background-color: #181D27;
-  color: #FBFEF4;
-  padding:15px 80px;
-  font-size:1.3rem;
-  font-family: 'Actor', sans-serif;
-  border-radius: 42px;
-  text-align: center;
-  cursor: pointer;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
-  margin-top: 30px;
+/* Enable hover only on non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+  a.primary:hover {
+    background: var(--button-primary-hover);
+    border-color: transparent;
+  }
+
+  a.secondary:hover {
+    background: var(--button-secondary-hover);
+    border-color: transparent;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
 }
 
-.loginSignupButton:hover {
-  background-color: #22262f;
+@media (max-width: 600px) {
+  .page {
+    padding: 32px;
+    padding-bottom: 80px;
+  }
+
+  .main {
+    align-items: center;
+  }
+
+  .main ol {
+    text-align: center;
+  }
+
+  .ctas {
+    flex-direction: column;
+  }
+
+  .ctas a {
+    font-size: 14px;
+    height: 40px;
+    padding: 0 16px;
+  }
+
+  a.secondary {
+    min-width: auto;
+  }
+
+  .footer {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
-.loginSignupButton:active {
-  transform: scale(0.98);
+@media (prefers-color-scheme: dark) {
+  .logo {
+    filter: invert();
+  }
 }
-
-
