@@ -1,3 +1,5 @@
+
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -34,6 +36,13 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+
+h1 {
+  font-family: 'Cambo', sans-serif;
+  font-size: 3rem;
+}
+
 
 @media (prefers-color-scheme: dark) {
   html {
