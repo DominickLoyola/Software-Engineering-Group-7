@@ -24,6 +24,14 @@ export default function Signup() {
 
     return (
         <div className={styles.pageGreen}>
+            <div className={styles.logoHeader}>
+                <Image
+                    src="/logo2.png"
+                    alt="Next.js logo"
+                    width={180}
+                    height={80}
+                />
+            </div>
             <main className={styles.main}>
                 <div className={styles.userAuth}>
                     <h1>Sign Up</h1>
