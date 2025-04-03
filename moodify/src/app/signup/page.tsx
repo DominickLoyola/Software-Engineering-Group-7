@@ -1,3 +1,9 @@
+//code written by Rishna Renikunta
+//use case: Sign up for Moodify
+//renders the signup page for Moodify application
+//collects a new user's username, password, and password confirmation
+//routes user to the login on successful validation, for user to proceed with logging in
+
 'use client';
 
 import Image from "next/image";
@@ -7,21 +13,27 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Signup() {
+
+    //state variables to store user input and error handling
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [reconfirmPass, setReconfirmPass] = useState("");
     const [error, setError] = useState("");
     const router = useRouter();
 
-    const handleLogin = () => {
+    //handles sign up for submission
+    const handleSignUp = () => {
         if (!username || !password || !reconfirmPass || password != reconfirmPass) {
+            //shows error if any field is empty or passwords don't match
             setError("True");
         } else {
+            //successful sign up, redirect to login page
             setError("");
-            router.push("/dashboard");
+            router.push("/login");
         }
     };
 
+    //displays sign up page to user
     return (
         <div className={styles.pageGreen}>
             <div className={styles.logoHeader}>
@@ -87,7 +99,7 @@ export default function Signup() {
                                 {error && (reconfirmPass != password || !reconfirmPass) && (<p style={{ color: '#b3362d', marginTop: '5px', textAlign: 'left' }}>Password does not match</p>)}
                             </div>
                         </div>
-                        <button onClick={handleLogin} className={styles.loginSignupButton}>
+                        <button onClick={handleSignUp} className={styles.loginSignupButton}>
                             Sign Up
                         </button>
                     </div>

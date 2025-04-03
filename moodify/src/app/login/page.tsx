@@ -1,3 +1,8 @@
+//code written by Rishna Renikunta
+//use case: Log into Moodify
+//renders login page for the Moodify application
+//it collects a username and password and routes the user to the dashboard on successful login
+
 'use client';
 
 import Image from "next/image";
@@ -7,20 +12,26 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Login() {
+
+  //state variables to store user input and error handling
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
 
+  //handles login logic
   const handleLogin = () => {
     if (!username || !password) {
+       //trigger error display if either input is empty
       setError("True");
     } else {
+       //successful login, route to dashboard page
       setError("");
       router.push("/dashboard");
     }
   };
 
+  //displays login page to user
   return (
     <div className={styles.pageGreen}>
       <div className={styles.logoHeader}>

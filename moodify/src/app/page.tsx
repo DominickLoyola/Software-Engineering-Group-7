@@ -1,3 +1,8 @@
+//code written by Rishna Renikunta
+//landing page for Moodify
+//renders the initial landing page of the Moodify application
+//displays logo, slogan, and a get started button that routes to the login page
+
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./page.module.css";
