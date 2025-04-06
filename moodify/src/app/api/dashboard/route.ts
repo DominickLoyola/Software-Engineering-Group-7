@@ -1,5 +1,7 @@
 // Dashboard backend code written by Dominick Loyola
-// Use case: 
+// Use case: Track listening history and genres user liked
+// Collects user mood data, stores within database,
+// and returns mood history and prvious playlists
 
 import { MongoClient, ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
