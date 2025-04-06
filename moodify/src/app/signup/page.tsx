@@ -65,7 +65,7 @@ export default function Signup() {
       setSuccess(true);
       
       // Wait 2 seconds before redirecting
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 3000));
       router.push("/login");
       
     } catch (err) {
