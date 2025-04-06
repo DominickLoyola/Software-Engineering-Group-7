@@ -226,3 +226,60 @@
 .exitButton:active {
   transform: scale(0.98);
 }
+
+.success-message-container {
+  color: #155724;
+  background-color: #d4edda;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border: 1px solid #c3e6cb;
+  font-family: 'Actor', sans-serif;
+  font-size: 1.2rem;
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading state for button (extends existing button styles) */
+.loginSignupButton.loading {
+  position: relative;
+  color: transparent;
+}
+
+.loginSignupButton.loading::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #FBFEF4;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Success state for button (extends existing button styles) */
+.loginSignupButton.success {
+  background-color: #4BB543;
+  pointer-events: none;
+}
+
+/* Additional input validation styles */
+.input-error {
+  border-color: #b3362d !important;
+}
+
+.error-text {
+  color: #b3362d;
+  font-size: 0.9rem;
+  margin-top: 8px;
+  text-align: left;
+  font-family: 'Actor', sans-serif;
+}
