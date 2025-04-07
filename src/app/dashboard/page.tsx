@@ -23,7 +23,7 @@ export default function Dashboard() {
   ]);
 
   const router = useRouter();
-  const username = "John"; // This would come from authentication context in a real app
+  const username = "John";
 
   // Handle logout
   const handleLogout = () => {
