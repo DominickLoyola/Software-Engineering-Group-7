@@ -3,6 +3,8 @@
 //renders the signup page for Moodify application
 //collects a new user's username, password, and password confirmation
 //routes user to the login on successful validation, for user to proceed with logging in
+// will notify the users if a field is empty
+// will notify the users if password does not match confirm password
 
 'use client';
 
