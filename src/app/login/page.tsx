@@ -1,3 +1,5 @@
+/// <reference types="react" />
+
 //code written by Rishna Renikunta
 //use case: Log into Moodify
 //renders login page for the Moodify application
@@ -9,7 +11,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../page.module.css";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Login() {

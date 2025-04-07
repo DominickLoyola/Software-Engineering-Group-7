@@ -8,10 +8,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../page.module.css";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { RiUserLine } from "react-icons/ri";
 import { HiOutlineUser } from "react-icons/hi2";
+import React, { useState } from "react";
 
 //displays view account page to user
 export default function viewAccount() {
