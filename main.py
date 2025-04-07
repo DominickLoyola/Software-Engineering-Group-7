@@ -168,3 +168,24 @@ if __name__ == "__main__":
 
     else:
         print("Invalid action selected.")
+
+
+#Aman
+#
+#Use case: Upload image for facial detection
+#Takes in file path for image
+#Processes image and detects face to be prepared for mood readings
+#
+#Use case: Upload video for facial detection
+#Takes in file path for video
+#Processes video and detects face to be prepared for mood readings
+
+#Pranava
+#
+#Use Case: Receive mood reading for uploaded image
+#Processed image is analyzed by model.
+#Model provides moods and weights for the various moods 
+#
+#Use Case: Receive mood reading for uploaded video
+#Processed image is analyzed by model.
+#Model provides moods and weights for the various moods 
