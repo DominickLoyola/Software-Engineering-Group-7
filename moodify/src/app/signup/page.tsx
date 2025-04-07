@@ -1,9 +1,18 @@
 //code written by Rishna Renikunta and Chris Kennedy
+
+//Rishna
 //use case: Sign up for Moodify
 //renders the signup page for Moodify application
 //collects a new user's username, password, and password confirmation
 //routes user to the login on successful validation, for user to proceed with logging in
 
+//Chris Kennedy
+//use case: make sure username is available and have a password requirement
+//prompts sign up page
+//when pressing "sign up" after inputting information it validates the password
+//(it validates the username is alrady in the database in route.ts)
+//if everything is good it prompts account creation successful and has a delay and reroutes to login page
+ 
 'use client';
 
 import Image from "next/image";
@@ -36,10 +45,10 @@ export default function Signup() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
-      return;
-    }
+    if (password.length < 6 || !/\d/.test(password)) {
+        setError("Password must be at least 6 characters and contain at least one number");
+        return;
+      }
 
     setIsLoading(true);
 
