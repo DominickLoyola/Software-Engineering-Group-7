@@ -10,12 +10,12 @@ export default function Navbar({ activePage }: { activePage: string }) {
                 <Image src="/logo2.png" alt="Moodify Logo" width={180} height={80} />
             </div>
             <div className={styles.center}>
-                <Link href="/ai-mood">
+                <Link href="/aiMood">
                     <span className={activePage === "ai" ? styles.active : ""}>
                         AI MOOD DETECTION
                     </span>
                 </Link>
-                <Link href="/manual-mood">
+                <Link href="/manualMoodInput">
                     <span className={activePage === "manual" ? styles.active : ""}>
                         MANUAL MOOD INPUT
                     </span>
