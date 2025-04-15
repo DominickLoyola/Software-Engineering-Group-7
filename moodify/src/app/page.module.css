@@ -330,7 +330,7 @@
   text-align: center;
   font-family: 'Actor', sans-serif;
   margin-bottom: 50px;
-  margin-top: -30px;
+  margin-top: -60px;
 }
 
 .inputSetMood {
@@ -339,6 +339,7 @@
   margin-bottom: 70px;
   width: 100%;
   justify-content: center;
+  align-items: center;
 }
 
 .greenButton {
@@ -361,15 +362,22 @@
 .inputBox {
   padding: 10px;
   min-height: 150px;
-  min-width: 60%;
+  width: 70%;
   border: 2px solid #181D27;
   border-radius: 8px;
   font-size: 1rem;
   resize: none;
   background-color: #FBFEF4;
   font-family: 'Actor', sans-serif;
-
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s ease;
 }
+
+.inputBox:focus {
+  outline: none;
+  border-color: #3A7D44;
+}
+
 
 .selectBox {
   width: 40%;
@@ -385,7 +393,7 @@
 .titleInput {
   text-align: center;
   background-color: #fefef4;
-  border:none;
+  border: none;
   font-size: 1rem;
   border-bottom: 2px black solid;
   width: 50%;
@@ -429,6 +437,7 @@
 .songInfo {
   display: flex;
   flex-direction: column;
+  margin-left: 12px;
 }
 
 .songName {
@@ -468,8 +477,28 @@
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 15px;
   cursor: pointer;
   font-family: 'Actor', sans-serif;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.linkButton {
+  margin-left: auto;
+  font-size: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  padding-left: 10px;
+  cursor: pointer;
+}
+
+.linkButton:hover {
+  text-decoration: underline;
+}
+
+.heartButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
 }

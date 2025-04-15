@@ -44,4 +44,34 @@
     padding: 8px;
     margin-top: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+  }
+
+  .dropdownMenu {
+    position: absolute;
+    top: 70px;
+    right: 40px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 10px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    min-width: 160px;
+    margin-top: 10px;
+  }
+  
+  .dropdownMenu a {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #333;
+    font-family: 'Actor', sans-serif;
+    font-size: 15px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .dropdownMenu a:hover {
+    background-color: #f1f1f1;
   }

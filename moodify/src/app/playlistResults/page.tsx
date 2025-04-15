@@ -1,10 +1,32 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../page.module.css";
 
 import Navbar from "../../../components/navbar";
+import { FaRegHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
+import { useState } from "react";
+
 
 export default function playlistResults() {
+
+    const [likedSongs, setLikedSongs] = useState<Set<number>>(new Set());
+
+    const toggleLike = (id: number) => {
+        setLikedSongs(prev => {
+            const updated = new Set(prev);
+            if (updated.has(id)) {
+                updated.delete(id);
+            } else {
+                updated.add(id);
+            }
+            return updated;
+        });
+    };
+
+
     return (
         <div className={styles.pageGreen}>
             <Navbar activePage="manual" />
@@ -32,13 +54,30 @@ export default function playlistResults() {
                             { id: 7, name: "Levitating", artist: "Dua Lipa", link: "https://www.youtube.com/watch?v=kTJczUoc26U" },
                             { id: 8, name: "Levitating", artist: "Dua Lipa", link: "https://www.youtube.com/watch?v=kTJczUoc26U" },
                         ].map((song) => (
-                            <Link href="https://www.youtube.com/watch?v=kTJczUoc26U" key={song.id} className={styles.songItem}>
-                                <span className={styles.heart}>♡</span>
+                            <div key={song.id} className={styles.songItem}>
+                                <button
+                                    onClick={() => toggleLike(song.id)}
+                                    className={styles.heartButton}
+                                >
+                                    {likedSongs.has(song.id) ? (
+                                        <FaHeart color='red' size={20} />
+                                    ) : (
+                                        <FaRegHeart color='red' size={20} />
+                                    )}
+                                </button>
                                 <div className={styles.songInfo}>
                                     <p className={styles.songName}>{song.name}</p>
                                     <p className={styles.artistName}>{song.artist}</p>
                                 </div>
-                            </Link>
+                                <a
+                                    href={song.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.linkButton}
+                                >
+                                    🔗
+                                </a>
+                            </div>
                         ))}
                     </div>
                 </div>

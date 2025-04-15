@@ -1,9 +1,14 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./navbar.module.css";
 import { HiOutlineUser } from "react-icons/hi2";
+import { useState, useRef, useEffect } from "react";
 
 export default function Navbar({ activePage }: { activePage: string }) {
+
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
     return (
         <nav className={styles.navbar}>
             <div className={styles.left}>
@@ -25,6 +30,11 @@ export default function Navbar({ activePage }: { activePage: string }) {
                         PLAYLISTS
                     </span>
                 </Link>
+                <Link href="/songs">
+                    <span className={activePage === "songs" ? styles.active : ""}>
+                        SONGS
+                    </span>
+                </Link>
                 <Link href="/dashboard">
                     <span className={activePage === "dashboard" ? styles.active : ""}>
                         DASHBOARD
@@ -32,10 +42,17 @@ export default function Navbar({ activePage }: { activePage: string }) {
                 </Link>
             </div>
             <div className={styles.right}>
-                <div className={styles.userIcon}>
+                <button className={styles.userIcon} onClick={() => setDropdownOpen(!dropdownOpen)}>
                     <HiOutlineUser color='#69B578' size={40}>
                     </HiOutlineUser>
-                </div>
+                </button>
+
+                {dropdownOpen && (
+                    <div className={styles.dropdownMenu}>
+                        <Link href="/viewAccount">View Account</Link>
+                        <Link href="/">Logout</Link>
+                    </div>
+                )}
             </div>
         </nav>
     );
