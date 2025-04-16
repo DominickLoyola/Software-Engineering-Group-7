@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../page.module.css";
@@ -5,6 +6,16 @@ import styles from "../page.module.css";
 import Navbar from "../../../components/navbar";
 
 export default function manualMoodInput() {
+
+    const handleDetectMood = async () => {
+        const response = await fetch("/api/chat-gpt", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ someData: true }),
+        });
+        console.log("RESPONSE", response)
+    };
+
     return (
         <div className={styles.pageGreen}>
             <Navbar activePage="manual" />
@@ -17,7 +28,7 @@ export default function manualMoodInput() {
                         <h2>How are you feeling?</h2>
                         <textarea className={styles.inputBox}></textarea>
                     </div>
-                    <Link href="/aiResults" className={styles.greenButton}>Detect Mood</Link>
+                    <button onClick={handleDetectMood} className={styles.greenButton}>Detect Mood</button>
                 </div>
             </main>
         </div>
