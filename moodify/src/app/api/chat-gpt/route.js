@@ -9,16 +9,18 @@ export async function POST(request) {
         apiKey: process.env.OPENAI_API_KEY
     })
 
+    const { input } = await request.json();
+
     const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
             {
                 role: "system",
-                content: "just need one word response"
+                content: "You are a mood classifier. Your job is to respond with ONLY ONE WORD from the following set: happy, sad, angry, neutral, fear. No explanation or extra words."
             },
             {
                 role: "user",
-                content: "im feeling down, categorize my mood in one of the following categories: happy, sad, angry, neutral, fearful"
+                content: input,
             }
         ],
         temperature: 0,
@@ -26,7 +28,7 @@ export async function POST(request) {
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0,
-    })
+    });
 
     return NextResponse.json(response);
 }
