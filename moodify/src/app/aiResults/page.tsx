@@ -16,11 +16,11 @@ export default function manualMoodInput() {
                     <div className={styles.inputSetMood}>
                         <h2>Detected Mood</h2>
                         <select className={styles.selectBox}>
-                            <option value="">Mood</option>
-                            <option value="happy">Happy</option>
+                            <option value="neutral">Nuetral</option>
+                            <option value="fear">Fear</option>
                             <option value="sad">Sad</option>
+                            <option value="happy">Happy</option>
                             <option value="angry">Angry</option>
-                            <option value="nervous">Nervous</option>
                         </select>
                     </div>
                     <div className={styles.inputSetMood}>
