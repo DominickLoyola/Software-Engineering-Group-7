@@ -5,45 +5,45 @@ import styles from "./navbar.module.css";
 import { HiOutlineUser } from "react-icons/hi2";
 import { useState, useRef, useEffect } from "react";
 
-export default function Navbar({ activePage }: { activePage: string }) {
+export default function NavbarWhite({ activePage }: { activePage: string }) {
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     return (
-        <nav className={styles.navbar}>
+        <nav className={styles.navbarWhite}>
             <div className={styles.left}>
-                <Image src="/logo2.png" alt="Moodify Logo" width={180} height={80} />
+                <Image src="/logo1.png" alt="Moodify Logo" width={180} height={70} />
             </div>
             <div className={styles.center}>
                 <Link href="/uploadMedia">
-                    <span className={activePage === "ai" ? styles.active : ""}>
+                    <span className={activePage === "ai" ? styles.activeWhite : ""}>
                         AI MOOD DETECTION
                     </span>
                 </Link>
                 <Link href="/manualMoodInput">
-                    <span className={activePage === "manual" ? styles.active : ""}>
+                    <span className={activePage === "manual" ? styles.activeWhite : ""}>
                         MANUAL MOOD INPUT
                     </span>
                 </Link>
                 <Link href="/playlists">
-                    <span className={activePage === "playlists" ? styles.active : ""}>
+                    <span className={activePage === "playlists" ? styles.activeWhite : ""}>
                         PLAYLISTS
                     </span>
                 </Link>
                 <Link href="/songs">
-                    <span className={activePage === "songs" ? styles.active : ""}>
+                    <span className={activePage === "songs" ? styles.activeWhite : ""}>
                         SONGS
                     </span>
                 </Link>
                 <Link href="/dashboard">
-                    <span className={activePage === "dashboard" ? styles.active : ""}>
+                    <span className={activePage === "dashboard" ? styles.activeWhite : ""}>
                         DASHBOARD
                     </span>
                 </Link>
             </div>
             <div className={styles.right}>
-                <button className={styles.userIcon} onClick={() => setDropdownOpen(!dropdownOpen)}>
-                    <HiOutlineUser color='#69B578' size={40}>
+                <button className={styles.userIconWhite} onClick={() => setDropdownOpen(!dropdownOpen)}>
+                    <HiOutlineUser color='#FBFEF4' size={40}>
                     </HiOutlineUser>
                 </button>
 
