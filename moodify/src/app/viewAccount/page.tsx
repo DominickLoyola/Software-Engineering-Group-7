@@ -2,6 +2,7 @@
 //use case: view account
 //renders view account page for the Moodify application
 //it displayed account information for user once logged in
+//to access page: http://localhost:3000/viewAccount
 
 'use client';
 

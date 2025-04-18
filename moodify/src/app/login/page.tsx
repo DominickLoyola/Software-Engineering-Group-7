@@ -2,6 +2,7 @@
 //use case: Log into Moodify
 //renders login page for the Moodify application
 //it collects a username and password and routes the user to the dashboard on successful login
+// will notify the users if a field is empty
 
 'use client';
 

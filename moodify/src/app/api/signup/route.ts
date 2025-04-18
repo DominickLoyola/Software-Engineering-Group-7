@@ -1,3 +1,10 @@
+//code written by Chris Kennedy
+//use case: store user information in the database and other future data
+//connects to the database (mongodb in this case)
+//from signup page it validates if the username has already an account 
+//if username is unique it creates a user within the database and gives it different attributes such as password
+
+
 import { MongoClient } from 'mongodb';
 import { NextResponse } from 'next/server';
 
