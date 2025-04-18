@@ -300,11 +300,11 @@
   justify-content: space-between;
   height: 80vh;
   overflow-y: auto;
+  margin-top: 30px;
 }
 
 .title {
   margin-top: 30px;
-  margin-bottom: 20px;
   text-align: center;
 }
 
@@ -329,7 +329,7 @@
   text-align: center;
   font-family: 'Actor', sans-serif;
   margin-bottom: 50px;
-  margin-top: -60px;
+  margin-top: -20px;
 }
 
 .inputSetMood {
@@ -358,6 +358,7 @@
   justify-content: center;
   align-items: center;
 }
+
 
 .inputBox {
   padding: 10px;

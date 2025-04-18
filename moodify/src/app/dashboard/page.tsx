@@ -42,10 +42,10 @@ export default function Dashboard() {
             <main style={{
                 paddingTop: '120px',
                 width: '100%',
-                maxWidth: '1200px',
+                paddingLeft: '120px',
+                paddingRight: '120px',
                 margin: '0 auto',
                 fontFamily: "'Actor', sans-serif",
-                minHeight: 'calc(100vh - 80px)'
             }}>
                 <h1 style={{
                     fontSize: '3.5rem',
