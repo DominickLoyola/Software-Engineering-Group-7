@@ -334,11 +334,12 @@
 
 .inputSetMood {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-bottom: 70px;
   width: 100%;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
+  gap: 10px;
 }
 
 .greenButton {
@@ -506,4 +507,14 @@
   border: none;
   cursor: pointer;
   margin-right: 10px;
+}
+
+.inputError {
+  border: 2px solid red !important;
+}
+
+.errorText {
+  color: red;
+  font-size: 10px;
+  margin-top: 8px;
 }
