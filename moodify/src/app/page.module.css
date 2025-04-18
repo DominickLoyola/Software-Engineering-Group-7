@@ -21,6 +21,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  font-family: 'Actor', sans-serif;
 }
 
 .main {
@@ -142,7 +143,7 @@
   width: 100%;
   display: flex;
   justify-content: left;
-  margin-left: 6px;
+  margin-left: 10px;
 }
 
 .viewAccountContainer {
@@ -262,7 +263,9 @@
 }
 
 @keyframes spin {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 /* Success state for button (extends existing button styles) */
@@ -282,4 +285,237 @@
   margin-top: 8px;
   text-align: left;
   font-family: 'Actor', sans-serif;
+}
+
+.whiteContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #FBFEF4;
+  width: 75%;
+  height: 80%;
+  align-items: center;
+  border-radius: 30px;
+  position: relative;
+  padding: 10px;
+  justify-content: space-between;
+  height: 80vh;
+  overflow-y: auto;
+  margin-top: 30px;
+}
+
+.title {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.exit {
+  background-color: #181D27;
+  color: #FBFEF4;
+  width: 40px;
+  height: 40px;
+  font-size: 30px;
+  border-radius: 20px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 7px;
+}
+
+.description {
+  font-size: 20px;
+  text-align: center;
+  font-family: 'Actor', sans-serif;
+  margin-bottom: 50px;
+  margin-top: -20px;
+}
+
+.inputSetMood {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 70px;
+  width: 100%;
+  justify-content: left;
+  align-items: center;
+  gap: 10px;
+}
+
+.greenButton {
+  background-color: #3A7D44;
+  color: #FBFEF4;
+  width: 180px;
+  height: 60px;
+  border: none;
+  border-radius: 15px;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Actor', sans-serif;
+  cursor: pointer;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.inputBox {
+  padding: 10px;
+  min-height: 150px;
+  width: 70%;
+  border: 1.5px solid #181D27;
+  border-radius: 8px;
+  font-size: 1rem;
+  resize: none;
+  background-color: #f4f7e7;
+  font-family: 'Actor', sans-serif;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.inputBox:focus {
+  outline: none;
+  border-color: #3A7D44;
+}
+
+
+.selectBox {
+  width: 60%;
+  padding: 12px;
+  border: 2px solid #181D27;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #f4f7e7;
+  cursor: pointer;
+  font-family: 'Actor', sans-serif;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s ease;
+}
+
+.selectBox:focus {
+  outline: none;
+  border-color: #3A7D44;
+}
+
+.titleInput {
+  text-align: center;
+  background-color: #fefef4;
+  border: none;
+  font-size: 1rem;
+  border-bottom: 2px black solid;
+  width: 50%;
+  height: 50px;
+  color: #254D32;
+  font-family: 'Actor', sans-serif;
+  outline: none;
+}
+
+.songList {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.songItem {
+  display: flex;
+  align-items: center;
+  background-color: #f4f7e7;
+  border-radius: 12px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.songItem:hover {
+  background-color: #ced0c3;
+}
+
+.heart {
+  font-size: 15px;
+  color: #d44f4f;
+  cursor: pointer;
+  margin-right: 15px;
+  user-select: none;
+}
+
+.songInfo {
+  display: flex;
+  flex-direction: column;
+  margin-left: 12px;
+}
+
+.songName {
+  font-weight: bold;
+  margin: 0;
+}
+
+.artistName {
+  font-size: 12px;
+  color: #555;
+  margin: 0;
+}
+
+.savePlaylistButton {
+  background-color: #3A7D44;
+  color: #FBFEF4;
+  width: 180px;
+  height: 60px;
+  border: none;
+  border-radius: 15px;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Actor', sans-serif;
+  cursor: pointer;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.saveButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #3A7D44;
+  color: #FBFEF4;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  font-family: 'Actor', sans-serif;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.linkButton {
+  margin-left: auto;
+  font-size: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  padding-left: 10px;
+  cursor: pointer;
+}
+
+.linkButton:hover {
+  text-decoration: underline;
+}
+
+.heartButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.inputError {
+  border: 2px solid red !important;
+}
+
+.errorText {
+  color: red;
+  font-size: 10px;
+  margin-top: 8px;
 }
