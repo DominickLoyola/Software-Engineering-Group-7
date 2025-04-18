@@ -5,21 +5,68 @@ import Link from "next/link";
 import styles from "../page.module.css";
 
 import Navbar from "../../../components/navbar";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function aiResults() {
-
+    const router = useRouter();
     const searchParams = useSearchParams();
     const moodFromParam = searchParams.get("mood") || "";
 
     const [mood, setMood] = useState("");
+    const [genre, setGenre] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [userId, setUserId] = useState("");
 
     useEffect(() => {
+        // Get the user ID from localStorage
+        const storedUserId = localStorage.getItem('userId');
+        if (!storedUserId) {
+            router.push('/login');
+            return;
+        }
+        setUserId(storedUserId);
+
         if (moodFromParam) {
             setMood(moodFromParam);
         }
-    }, [moodFromParam]);
+    }, [moodFromParam, router]);
+
+    const handleGeneratePlaylist = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        
+        if (!userId) {
+            router.push('/login');
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            // Update the mood in the database if it was changed
+            if (mood !== moodFromParam) {
+                const saveMoodResponse = await fetch("/api/mood/manual", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        userId: userId,
+                        moodDescription: mood
+                    }),
+                });
+
+                if (!saveMoodResponse.ok) {
+                    throw new Error("Failed to update mood");
+                }
+            }
+
+            // Navigate to playlist results
+            router.push("/playlistResults");
+        } catch (error) {
+            console.error("Error:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className={styles.pageGreen}>
