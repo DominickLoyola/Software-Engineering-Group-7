@@ -13,11 +13,11 @@ const dbName = process.env.MONGODB_DB || "userinfo";
 function mapMoodToCategory(moodDescription: string): string[] {
   const moodMap: Record<string, string[]> = {
     'happy': ['joyful', 'excited', 'cheerful', 'upbeat', 'elated'],
+    'angry': ['irritated', 'furious', 'annoyed', 'enraged', 'resentful'],
     'sad': ['melancholy', 'down', 'blue', 'gloomy', 'depressed'],
-    'energetic': ['pumped', 'active', 'lively', 'dynamic', 'vigorous'],
-    'calm': ['relaxed', 'peaceful', 'tranquil', 'serene', 'mellow'],
-    'focused': ['concentrated', 'determined', 'productive', 'studious']
-  };
+    'neutral': ['balanced', 'grounded', 'calm', 'centered', 'unperturbed'],
+    'fear': ['anxious', 'afraid', 'nervous', 'terrified', 'worried']
+  }
 
   // Convert input to lowercase for matching
   const lowerCaseDescription = moodDescription.toLowerCase();
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Normalize music intensity to a scale of 1-10
+    // Normalize intensity to a scale of 1-10
     const normalizedIntensity = intensity ? Math.min(Math.max(parseInt(intensity), 1), 10) : 5;
 
     // Map the mood description to standardized categories
