@@ -46,7 +46,8 @@ export default function Login() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        setError(data.message);
+        return;
       }
 
       // Store the user ID in localStorage
@@ -55,7 +56,7 @@ export default function Login() {
       // Navigate to dashboard
       router.push("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      setError("Login failed");
     } finally {
       setIsLoading(false);
     }
@@ -75,6 +76,7 @@ export default function Login() {
       <main className={styles.main}>
         <div className={styles.userAuth}>
           <h1>Login</h1>
+          {error && <p style={{ color: '#b3362d', marginBottom: '15px', textAlign: 'center' }}>{error}</p>}
           <div className={styles.form}>
             <div className={styles.inputSet}>
               <label style={{ fontWeight: 'bold', fontSize: '1.2rem' }} htmlFor="username">Username</label>
