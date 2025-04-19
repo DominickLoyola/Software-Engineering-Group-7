@@ -519,3 +519,73 @@
   font-size: 10px;
   margin-top: 8px;
 }
+
+.specificPlaylist {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0px;
+  width: 100%;
+}
+
+.playlistContainerNew {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  flex-grow: 1;
+}
+
+.playlistCardNew {
+  background-color: #f4f7e7;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.playlistHeaderNew {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.playlistTitleInput {
+  font-size: 16px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid black;
+  width: 50%;
+  background-color: white;
+}
+
+.iconGroupNew {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.iconButtonNew {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #3A7D44;
+  padding: 5px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.songListNew {
+  margin: 0;
+  padding-left: 20px;
+  color: #254D32;
+  font-size: 0.95rem;
+  overflow-y: auto;
+}
+
+.songItemNew {
+  margin-top: 4px;
+}

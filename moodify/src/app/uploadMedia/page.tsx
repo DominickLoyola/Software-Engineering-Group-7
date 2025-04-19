@@ -43,7 +43,7 @@ export default function UploadMedia() {
                         justifyContent: 'center',
                         alignItems: 'center',
                         width: '100%',
-                        gap: '200px',
+                        gap: '150px',
                         marginBottom: '60px'
                     }}>
                         {/* Video */}
@@ -63,7 +63,7 @@ export default function UploadMedia() {
                                 <CiVideoOn color='#181D27' size={150}>
                                 </CiVideoOn>
                             </div>
-                            <h2 style={{ fontSize: '1.5rem', color: '#254D32', fontFamily: "'Actor', sans-serif" }}>VIDEO UPLOAD</h2>
+                            <h2 style={{ fontSize: '1.5rem', color: '#254D32', fontFamily: "'Actor', sans-serif" }}>Video Upload</h2>
                         </div>
 
                         {/* Image */}
@@ -82,7 +82,25 @@ export default function UploadMedia() {
                             }}>
                                 <CiImageOn color='#181D27' size={150}></CiImageOn>
                             </div>
-                            <h2 style={{ fontSize: '1.5rem', color: '#254D32', fontFamily: "'Actor', sans-serif" }}>IMAGE UPLOAD</h2>
+                            <h2 style={{ fontSize: '1.5rem', color: '#254D32', fontFamily: "'Actor', sans-serif" }}>Image Upload</h2>
+                        </div>
+                        {/* Camera */}
+                        <div onClick={() => handleOptionSelect('camera')} style={{ cursor: 'pointer', textAlign: 'center' }}>
+                            <div style={{
+                                width: '240px',
+                                height: '240px',
+                                backgroundColor: '#69B578',
+                                borderRadius: '5px',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginBottom: '20px',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                                border: selectedOption === 'camera' ? '3px solid #254D32' : 'none'
+                            }}>
+                                <CiImageOn color='#181D27' size={150}></CiImageOn>
+                            </div>
+                            <h2 style={{ fontSize: '1.5rem', color: '#254D32', fontFamily: "'Actor', sans-serif" }}>Camera</h2>
                         </div>
                     </div>
 
