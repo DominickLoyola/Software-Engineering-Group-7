@@ -4,38 +4,66 @@ import Link from "next/link";
 import styles from "../page.module.css";
 
 import Navbar from "../../../components/navbar"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function manualMoodInput() {
-
     const router = useRouter();
-
     const [input, setInput] = useState("");
-    const [mood, setMood] = useState("");
     const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [userId, setUserId] = useState("");
 
+    useEffect(() => {
+        // This helps get userID from database after login
+        const storedUserId = localStorage.getItem('userId');
+        if (storedUserId) {
+            setUserId(storedUserId);
+        }
+    }, []);
 
     const handleDetectMood = async () => {
 
-        if (!input.trim()) {
-            setError(true);
+        if (!userId) {
+            router.push('/login');
             return;
         }
 
         setError(false);
+        setErrorMessage("");
 
-        const response = await fetch("/api/chat-gpt", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ input }),
-        });
+        try {
+            // Get mood from OpenAI
+            const response = await fetch("/api/chat-gpt", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ input }),
+            });
 
-        const result = await response.json();
-        const mood = result.choices[0].message.content.toLowerCase();
+            const result = await response.json();
+            const detectedMood = result.choices[0].message.content.toLowerCase();
 
-        router.push(`/aiResults?mood=${encodeURIComponent(mood)}`);
+            // Save mood to database
+            const saveMoodResponse = await fetch("/api/mood/manual", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: userId,
+                    moodDescription: input
+                }),
+            });
 
+            if (!saveMoodResponse.ok) {
+                throw new Error("Failed to save mood");
+            }
+
+            // Navigate to results page with the detected mood
+            router.push(`/aiResults?mood=${encodeURIComponent(detectedMood)}`);
+        } catch (error) {
+            console.error("Error:", error);
+            setError(true);
+            setErrorMessage("An error occurred while processing your mood");
+        }
     };
 
     return (

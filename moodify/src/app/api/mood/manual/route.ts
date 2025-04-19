@@ -71,7 +71,6 @@ export async function POST(request: Request) {
       userId: new ObjectId(userId),
       description: moodDescription,
       categories: moodCategories,
-      intensity: normalizedIntensity,
       source: 'manual',
       timestamp: new Date()
     };
@@ -83,10 +82,18 @@ export async function POST(request: Request) {
       throw new Error("Failed to save mood data");
     }
 
-    // Update user's last activity
+    // Update user's document with current mood and last activity
     await usersCollection.updateOne(
       { _id: new ObjectId(userId) },
-      { $set: { lastActivity: new Date(), lastMoodId: result.insertedId } }
+      { 
+        $set: { 
+          lastActivity: new Date(), 
+          lastMoodId: result.insertedId,
+          currentMood: moodDescription,
+          moodCategories: moodCategories,
+          moodTimestamp: new Date()
+        } 
+      }
     );
 
     return NextResponse.json(

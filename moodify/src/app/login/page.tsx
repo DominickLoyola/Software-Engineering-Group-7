@@ -18,17 +18,46 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   //handles login logic
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!username || !password) {
-       //trigger error display if either input is empty
-      setError("True");
-    } else {
-       //successful login, route to dashboard page
-      setError("");
+      setError("Please fill in all fields");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      // Store the user ID in localStorage
+      localStorage.setItem('userId', data.userId);
+      
+      // Navigate to dashboard
       router.push("/dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
