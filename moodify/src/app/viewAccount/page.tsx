@@ -13,11 +13,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { RiUserLine } from "react-icons/ri";
 import { HiOutlineUser } from "react-icons/hi2";
-import NavbarWhite from "../../../components/navbarWhite"
+import NavbarWhite from "../../../components/navbarWhite";
 
 //displays view account page to user
 export default function viewAccount() {
-
   return (
     <div className={styles.page}>
       <NavbarWhite activePage="" />

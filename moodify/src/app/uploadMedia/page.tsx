@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import Navbar from "../../../components/navbar";
 import { CiVideoOn } from "react-icons/ci";
 import { CiImageOn } from "react-icons/ci";
+import { CiCamera } from "react-icons/ci";
+
 
 export default function UploadMedia() {
     const router = useRouter();
@@ -98,7 +100,7 @@ export default function UploadMedia() {
                                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
                                 border: selectedOption === 'camera' ? '3px solid #254D32' : 'none'
                             }}>
-                                <CiImageOn color='#181D27' size={150}></CiImageOn>
+                                <CiCamera color='#181D27' size={150}></CiCamera>
                             </div>
                             <h2 style={{ fontSize: '1.5rem', color: '#254D32', fontFamily: "'Actor', sans-serif" }}>Camera</h2>
                         </div>
