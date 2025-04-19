@@ -12,11 +12,41 @@ const dbName = process.env.MONGODB_DB || "userinfo";
 // Function to map user-described moods to standardized categories
 function mapMoodToCategory(moodDescription: string): string[] {
   const moodMap: Record<string, string[]> = {
-    'happy': ['joyful', 'excited', 'cheerful', 'upbeat', 'elated'],
-    'angry': ['irritated', 'furious', 'annoyed', 'enraged', 'resentful'],
-    'sad': ['melancholy', 'down', 'blue', 'gloomy', 'depressed'],
-    'neutral': ['balanced', 'grounded', 'calm', 'centered', 'unperturbed'],
-    'fear': ['anxious', 'afraid', 'nervous', 'terrified', 'worried']
+'happy': [
+      'joyful', 'excited', 'cheerful', 'upbeat', 'elated',
+      'euphoric', 'ecstatic', 'delighted', 'thrilled', 'overjoyed',
+      'blissful', 'radiant', 'jubilant', 'enthusiastic', 'optimistic'
+    ],
+    'angry': [
+      'irritated', 'furious', 'annoyed', 'enraged', 'resentful',
+      'outraged', 'hostile', 'livid', 'irate', 'mad',
+      'frustrated', 'agitated', 'bitter', 'indignant', 'infuriated',
+      'rage', 'seething', 'fuming', 'heated', 'cross',
+      'vexed', 'disgruntled', 'offended', 'antagonized', 'provoked',
+      'exasperated', 'hateful', 'violent', 'fierce', 'wrathful',
+      'upset', 'ticked', 'pissed', 'incensed', 'irritable'
+    ],
+    'sad': [
+      'melancholy', 'down', 'blue', 'gloomy', 'depressed',
+      'hopeless', 'miserable', 'heartbroken', 'devastated', 'sorrowful',
+      'grief', 'despair', 'dejected', 'despondent', 'unhappy',
+      'lonely', 'disappointed', 'discouraged', 'distressed'
+    ],
+    'neutral': [
+      'balanced', 'grounded', 'calm', 'centered', 'unperturbed',
+      'okay', 'fine', 'alright', 'steady', 'composed',
+      'normal', 'stable', 'moderate', 'content', 'peaceful'
+    ],
+    'fear': [
+      'anxious', 'afraid', 'nervous', 'terrified', 'worried',
+      'scared', 'panicked', 'frightened', 'apprehensive', 'uneasy',
+      'stressed', 'paranoid', 'alarmed', 'disturbed', 'dreadful',
+      'horrified', 'petrified', 'trembling', 'shaken', 'startled',
+      'spooked', 'intimidated', 'threatened', 'insecure', 'vulnerable',
+      'phobic', 'jumpy', 'jittery', 'restless', 'tense',
+      'overwhelmed', 'freaked', 'aghast', 'terrorized', 'shocked',
+      'dreading', 'fearful', 'timid', 'hesitant', 'suspicious'
+    ]
   }
 
   // Convert input to lowercase for matching
@@ -28,8 +58,29 @@ function mapMoodToCategory(moodDescription: string): string[] {
            synonyms.some(synonym => lowerCaseDescription.includes(synonym));
   }).map(([category]) => category);
   
-  // Default to 'neutral' if no matches found
-  return categories.length > 0 ? categories : ['neutral'];
+ // If no matches found, try to map based on sentiment analysis
+ if (categories.length === 0) {
+  // Map intense positive words to happy
+  if (lowerCaseDescription.match(/\b(amazing|wonderful|fantastic|great|awesome|excellent|perfect)\b/)) {
+    return ['happy'];
+  }
+  // Map intense negative words to sad
+  if (lowerCaseDescription.match(/\b(terrible|awful|horrible|worst|bad|hopeless|miserable)\b/)) {
+    return ['sad'];
+  }
+  // Map intense fear words
+  if (lowerCaseDescription.match(/\b(terrifying|scary|creepy|haunting|spine-chilling|hair-raising)\b/)) {
+    return ['fear'];
+  }
+  // Map intense anger words
+  if (lowerCaseDescription.match(/\b(hate|angry|furious|outraged|mad|pissed|raging)\b/)) {
+    return ['angry'];
+  }
+  // Default to neutral if no clear mapping
+  return ['neutral'];
+}
+
+return categories;
 }
 
 export async function POST(request: Request) {
