@@ -27,12 +27,20 @@ export async function POST(request: Request) {
     const db = client.db(dbName);
     const usersCollection = db.collection('users');
 
-    // Find user with matching credentials
+    // First check if user exists
+    const userExists = await usersCollection.findOne({ username });
+    if (!userExists) {
+      return NextResponse.json(
+        { message: "Username not found. Please check your username or sign up." },
+        { status: 401 }
+      );
+    }
+
+    // Then check if password matches
     const user = await usersCollection.findOne({ username, password });
-    
     if (!user) {
       return NextResponse.json(
-        { message: "Invalid credentials" },
+        { message: "Incorrect password. Please try again." },
         { status: 401 }
       );
     }

@@ -1,7 +1,7 @@
 // Dashboard backend code written by Dominick Loyola
 // Use case: Track listening history and genres user liked
-// Collects user mood data, stores within database,
-// and returns mood history and prvious playlists
+// Uses users stored data within database,
+// and returns 3 most recent playlists
 
 import { MongoClient, ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
@@ -30,9 +30,8 @@ export async function GET(request: Request) {
     // Define collections
     const usersCollection = db.collection('users');
     const playlistsCollection = db.collection('playlists');
-    const moodsCollection = db.collection('moods');
 
-    // Verify user exists
+    // Verify user exists and get their name
     const user = await usersCollection.findOne({ 
       _id: new ObjectId(userId) 
     });
@@ -44,60 +43,21 @@ export async function GET(request: Request) {
       );
     }
 
-    // Get recent playlists (limited to 5)
+    // Get 3 most recent playlists
     const recentPlaylists = await playlistsCollection.find({
       userId: new ObjectId(userId)
     })
     .sort({ createdAt: -1 })
-    .limit(5)
+    .limit(3)
     .toArray();
 
-    // Get mood history (limited to 10)
-    const moodHistory = await moodsCollection.find({
-      userId: new ObjectId(userId)
-    })
-    .sort({ timestamp: -1 })
-    .limit(10)
-    .toArray();
-
-    // Get most frequent mood categories
-    const moodAggregation = await moodsCollection.aggregate([
-      { $match: { userId: new ObjectId(userId) } },
-      { $unwind: "$categories" },
-      { $group: { _id: "$categories", count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 3 }
-    ]).toArray();
-
-    const topMoods = moodAggregation.map(item => item._id);
-
-    // Assemble dashboard data
+    // Format the response
     const dashboardData = {
-      user: {
-        username: user.username,
-        lastActive: user.lastActivity || null
-      },
+      username: user.username,
       recentPlaylists: recentPlaylists.map(playlist => ({
         id: playlist._id,
-        name: playlist.name,
-        tracks: playlist.tracks.length,
-        mood: playlist.mood,
-        createdAt: playlist.createdAt
-      })),
-      moodInsights: {
-        recentMoods: moodHistory.map(mood => ({
-          id: mood._id,
-          categories: mood.categories,
-          intensity: mood.intensity,
-          timestamp: mood.timestamp,
-          source: mood.source
-        })),
-        topMoods
-      },
-      stats: {
-        totalPlaylists: await playlistsCollection.countDocuments({ userId: new ObjectId(userId) }),
-        totalMoodEntries: await moodsCollection.countDocuments({ userId: new ObjectId(userId) })
-      }
+        name: playlist.name || `Playlist #${playlist._id.toString().slice(-3)}` // Fallback name if none exists
+      }))
     };
 
     return NextResponse.json(
