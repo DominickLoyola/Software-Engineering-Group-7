@@ -9,6 +9,10 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
 import { useState } from "react";
 
+const [playlistName, setPlaylistName] = useState(""); // Additions by Omar
+const mood = "happy"; // TEMP: hardcode mood for now. Replace later if passed as prop. // Additions by Omar
+
+
 
 export default function playlistResults() {
 
@@ -26,6 +30,15 @@ export default function playlistResults() {
         });
     };
 
+    const songs = [ //Additions by omar
+        { id: 1, name: "Stay", artist: "The Kid LAROI & Justin Bieber", link: "https://www.youtube.com/watch?v=kTJczUoc26U" },
+        { id: 2, name: "Blinding Lights", artist: "The Weeknd", link: "https://www.youtube.com/watch?v=4NRXx6U8ABQ" },
+        { id: 3, name: "Levitating", artist: "Dua Lipa", link: "https://www.youtube.com/watch?v=TUVcZfQe-Kw" },
+        { id: 4, name: "Sunflower", artist: "Post Malone & Swae Lee", link: "https://www.youtube.com/watch?v=ApXoWvfEYVU" },
+        { id: 5, name: "Happy", artist: "Pharrell Williams", link: "https://www.youtube.com/watch?v=ZbZSe6N_BXs" },
+        { id: 6, name: "Can’t Stop the Feeling!", artist: "Justin Timberlake", link: "https://www.youtube.com/watch?v=ru0K8uYEZWw" },
+      ];
+      
 
     return (
         <div className={styles.pageGreen}>
