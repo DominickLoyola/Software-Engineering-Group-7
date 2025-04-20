@@ -10,18 +10,42 @@ export default function PlaylistsPage() {
     const [playlists, setPlaylists] = useState([
         {
             id: 1,
-            title: "Vibes for a Chill Day",
-            songs: ["Stay - The Kid LAROI & Justin Bieber", "Levitating - Dua Lipa"]
+            title: "Rainy Day Blues",
+            songs: [
+                "Someone Like You - Adele",
+                "Skinny Love - Bon Iver",
+                "The Night We Met - Lord Huron",
+                "Breathe Me - Sia",
+                "Slow Dancing in the Dark - Joji",
+                "Liability - Lorde",
+                "Roslyn - Bon Iver & St. Vincent"
+            ]
         },
         {
             id: 2,
-            title: "Vibes for a Chill Day",
-            songs: ["Stay - The Kid LAROI & Justin Bieber", "Levitating - Dua Lipa"]
+            title: "Morning Vibes",
+            songs: [
+                "Banana Pancakes - Jack Johnson",
+                "Sunday Morning - Maroon 5",
+                "Good Morning - Kanye West",
+                "Pocketful of Sunshine - Natasha Bedingfield",
+                "Put Your Records On - Corinne Bailey Rae",
+                "Sunflower - Post Malone & Swae Lee",
+                "Budapest - George Ezra"
+            ]
         },
         {
             id: 3,
-            title: "Vibes for a Chill Day",
-            songs: ["Stay - The Kid LAROI & Justin Bieber", "Levitating - Dua Lipa"]
+            title: "Feel Good Songs",
+            songs: [
+                "Good as Hell - Lizzo",
+                "Can’t Stop the Feeling! - Justin Timberlake",
+                "Walking on Sunshine - Katrina & The Waves",
+                "Happy - Pharrell Williams",
+                "Good Day - Nappy Roots",
+                "Electric Love - BØRNS",
+                "Uptown Funk - Mark Ronson ft. Bruno Mars"
+            ]
         },
 
     ]);
