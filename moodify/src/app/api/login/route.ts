@@ -20,10 +20,9 @@ export async function POST(request: Request) {
     const db = client.db(dbName);
     const usersCollection = db.collection('users');
 
-    // Direct plain text comparison
     const user = await usersCollection.findOne({ 
       username,
-      password // Comparing exactly as stored
+      password 
     });
     
     if (!user) {
