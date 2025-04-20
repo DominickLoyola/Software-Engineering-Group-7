@@ -32,19 +32,27 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  try {
-    const client = new MongoClient(uri);
-    await client.connect();
-
-    const db = client.db(dbName);
-    const playlists = db.collection("playlists");
-
-    const result = await playlists.find({ userId: "user123" }).toArray();
-
-    await client.close();
-    return NextResponse.json(result, { status: 200 });
-  } catch (error) {
-    console.error("GET /api/playlist error:", error);
-    return NextResponse.json({ error: "Failed to fetch playlists" }, { status: 500 });
+    try {
+      const { searchParams } = new URL(req.url);
+      const userId = searchParams.get("userId");
+  
+      if (!userId) {
+        return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+      }
+  
+      const client = new MongoClient(uri);
+      await client.connect();
+  
+      const db = client.db(dbName);
+      const playlists = db.collection("playlists");
+  
+      const result = await playlists.find({ userId }).toArray();
+  
+      await client.close();
+      return NextResponse.json(result, { status: 200 });
+    } catch (error) {
+      console.error("GET /api/playlist error:", error);
+      return NextResponse.json({ error: "Failed to fetch playlists" }, { status: 500 });
+    }
   }
-}
+  

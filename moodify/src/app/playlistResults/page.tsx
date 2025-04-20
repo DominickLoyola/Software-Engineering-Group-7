@@ -7,14 +7,36 @@ import styles from "../page.module.css";
 import Navbar from "../../../components/navbar";
 import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import moodGenreSongs from "./../songlist/moodGenreSongs.json";
+import { useSearchParams } from "next/navigation";
 
-const [playlistName, setPlaylistName] = useState(""); // Additions by Omar
-const mood = "happy"; // TEMP: hardcode mood for now. Replace later if passed as prop. // Additions by Omar
+
+
+
+
+
+
+
 
 
 
 export default function playlistResults() {
+
+    const MAX_PLAYLISTS_PER_USER = 5;
+    const [userId, setUserId] = useState("");
+
+    useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) setUserId(storedUserId);
+    }, []);
+
+    
+    const [playlistName, setPlaylistName] = useState(""); // Additions by Omar
+
+    const searchParams = useSearchParams();
+    const mood = searchParams.get("mood") || "happy";
+    const genre = searchParams.get("genre") || "pop";
 
     const [likedSongs, setLikedSongs] = useState<Set<number>>(new Set());
 
@@ -30,14 +52,63 @@ export default function playlistResults() {
         });
     };
 
-    const songs = [ //Additions by omar
-        { id: 1, name: "Stay", artist: "The Kid LAROI & Justin Bieber", link: "https://www.youtube.com/watch?v=kTJczUoc26U" },
-        { id: 2, name: "Blinding Lights", artist: "The Weeknd", link: "https://www.youtube.com/watch?v=4NRXx6U8ABQ" },
-        { id: 3, name: "Levitating", artist: "Dua Lipa", link: "https://www.youtube.com/watch?v=TUVcZfQe-Kw" },
-        { id: 4, name: "Sunflower", artist: "Post Malone & Swae Lee", link: "https://www.youtube.com/watch?v=ApXoWvfEYVU" },
-        { id: 5, name: "Happy", artist: "Pharrell Williams", link: "https://www.youtube.com/watch?v=ZbZSe6N_BXs" },
-        { id: 6, name: "Can’t Stop the Feeling!", artist: "Justin Timberlake", link: "https://www.youtube.com/watch?v=ru0K8uYEZWw" },
-      ];
+    // @ts-ignore //its fine (hopefully) typescript just dont like how its dynamic or some bs
+    const songs = moodGenreSongs[mood] && moodGenreSongs[mood][genre] || []; //additions from omar
+
+    type Song = {
+        id: number;
+        name: string;
+        artist: string;
+        link: string;
+      };
+      
+      
+    const savePlaylist = async () => { // @ts-ignore //its fine (hopefully) typescript just dont like how its dynamic or some bs
+        const selectedSongs = songs.filter(song => likedSongs.has(song.id));
+      
+        if (!playlistName || selectedSongs.length === 0) {
+          alert("Please enter a playlist name and like at least one song.");
+          return;
+        }
+      
+        try {
+          // Check how many playlists this user already has
+          const resCheck = await fetch(`/api/playlist?userId=${userId}`);
+          const existingPlaylists = await resCheck.json();
+      
+          if (existingPlaylists.length >= MAX_PLAYLISTS_PER_USER) {
+            alert(`You can only save up to ${MAX_PLAYLISTS_PER_USER} playlists.`);
+            return;
+          }
+      
+          // Save the new playlist
+          const res = await fetch("/api/playlist", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              userId: userId,
+              name: playlistName,
+              mood: mood,
+              songs: selectedSongs
+            })
+          });
+      
+          const data = await res.json();
+      
+          if (res.ok) {
+            alert("Playlist saved!");
+          } else {
+            alert("Error: " + data.error);
+          }
+      
+        } catch (err) {
+          console.error("Error saving playlist:", err);
+          alert("Something went wrong while saving.");
+        }
+      };
+       //Additions by omar
       
 
     return (
@@ -47,50 +118,43 @@ export default function playlistResults() {
                 <div className={styles.whiteContainer}>
                     <Link href="/dashboard" className={styles.exit}>×</Link>
                     <h1 className={styles.title}>Playlist Results</h1>
-                    <button className={styles.saveButton}>Save</button>
-                    <div className={styles.inputSetMood}>
+                    <button className={styles.saveButton} onClick={savePlaylist}>Save</button> 
+                    <div className={styles.inputSetMood}> 
                         <input
-                            className={styles.titleInput}
-                            type="title"
-                            id="title"
-                            placeholder="Name of Playlist"
+                        className={styles.titleInput}
+                        type="text"
+                        placeholder="Name of Playlist"
+                        value={playlistName}
+                        onChange={(e) => setPlaylistName(e.target.value)} //Addition from omar
                         />
+
                     </div>
-                    <div className={styles.songList}>
-                        {[
-                            { id: 1, name: "Stay", artist: "The Kid LAROI & Justin Bieber", link: "https://www.youtube.com/watch?v=kTJczUoc26U" },
-                            { id: 2, name: "Blinding Lights", artist: "The Weeknd", link: "https://www.youtube.com/watch?v=kTJczUoc26U" },
-                            { id: 3, name: "Levitating", artist: "Dua Lipa", link: "https://www.youtube.com/watch?v=kTJczUoc26U" },
-                            { id: 4, name: "Levitating", artist: "Dua Lipa", link: "https://www.youtube.com/watch?v=kTJczUoc26U" },
-                            { id: 5, name: "Levitating", artist: "Dua Lipa", link: "https://www.youtube.com/watch?v=kTJczUoc26U" },
-                            { id: 6, name: "Levitating", artist: "Dua Lipa", link: "https://www.youtube.com/watch?v=kTJczUoc26U" },
-                            { id: 7, name: "Levitating", artist: "Dua Lipa", link: "https://www.youtube.com/watch?v=kTJczUoc26U" },
-                            { id: 8, name: "Levitating", artist: "Dua Lipa", link: "https://www.youtube.com/watch?v=kTJczUoc26U" },
-                        ].map((song) => (
-                            <div key={song.id} className={styles.songItem}>
-                                <button
-                                    onClick={() => toggleLike(song.id)}
-                                    className={styles.heartButton}
-                                >
-                                    {likedSongs.has(song.id) ? (
-                                        <FaHeart color='red' size={20} />
-                                    ) : (
-                                        <FaRegHeart color='red' size={20} />
-                                    )}
-                                </button>
-                                <div className={styles.songInfo}>
-                                    <p className={styles.songName}>{song.name}</p>
-                                    <p className={styles.artistName}>{song.artist}</p>
-                                </div>
-                                <a
-                                    href={song.link}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={styles.linkButton}
-                                >
-                                    🔗
-                                </a>
+                    <div className={styles.songList}> 
+                    {(songs as Song[]).map((song) => ( 
+                        <div key={song.id} className={styles.songItem}>
+                            <button
+                            onClick={() => toggleLike(song.id)}
+                            className={styles.heartButton}
+                            >
+                            {likedSongs.has(song.id) ? (
+                                <FaHeart color='red' size={20} />
+                            ) : (
+                                <FaRegHeart color='red' size={20} />
+                            )}
+                            </button>
+                            <div className={styles.songInfo}>
+                            <p className={styles.songName}>{song.name}</p>
+                            <p className={styles.artistName}>{song.artist}</p>
                             </div>
+                            <a
+                            href={song.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.linkButton}
+                            >
+                            🔗
+                            </a>
+                        </div>
                         ))}
                     </div>
                 </div>

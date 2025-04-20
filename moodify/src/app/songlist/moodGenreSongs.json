@@ -1,0 +1,181 @@
+{
+    "happy": {
+        "pop": [
+        { "id": 1, "name": "Happy", "artist": "Pharrell Williams", "link": "https://www.youtube.com/watch?v=ZbZSe6N_BXs" },
+        { "id": 2, "name": "Shut Up and Dance", "artist": "WALK THE MOON", "link": "https://www.youtube.com/watch?v=6JCLY0Rlx6Q" },
+        { "id": 3, "name": "Good Time", "artist": "Owl City & Carly Rae Jepsen", "link": "https://www.youtube.com/watch?v=H7HmzwI67ec" },
+        { "id": 4, "name": "Firework", "artist": "Katy Perry", "link": "https://www.youtube.com/watch?v=QGJuMBdaqIw" },
+        { "id": 5, "name": "On Top of the World", "artist": "Imagine Dragons", "link": "https://www.youtube.com/watch?v=w5tWYmIOWGk" },
+        { "id": 6, "name": "Best Day of My Life", "artist": "American Authors", "link": "https://www.youtube.com/watch?v=Y66j_BUCBMY" }
+        ],
+        "rap": [
+        { "id": 7, "name": "Good Day", "artist": "Nappy Roots", "link": "https://www.youtube.com/watch?v=8Y1s5z7J7WM" },
+        { "id": 8, "name": "Juice", "artist": "Chance the Rapper", "link": "https://www.youtube.com/watch?v=LRP8d7hhpoQ" },
+        { "id": 9, "name": "Celebrate", "artist": "Anderson .Paak", "link": "https://www.youtube.com/watch?v=ii91o6Y8fH4" },
+        { "id": 10, "name": "The Light", "artist": "Common", "link": "https://www.youtube.com/watch?v=OjHX7jf-znA" },
+        { "id": 11, "name": "I Love It", "artist": "Kanye West & Lil Pump", "link": "https://www.youtube.com/watch?v=cwQgjq0mCdE" },
+        { "id": 12, "name": "Hotline Bling", "artist": "Drake", "link": "https://www.youtube.com/watch?v=uxpDa-c-4Mc" }
+        ],
+        "rnb": [
+        { "id": 13, "name": "Treasure", "artist": "Bruno Mars", "link": "https://www.youtube.com/watch?v=nPvuNsRccVw" },
+        { "id": 14, "name": "Blinding Lights", "artist": "The Weeknd", "link": "https://www.youtube.com/watch?v=4NRXx6U8ABQ" },
+        { "id": 15, "name": "Electric", "artist": "Alina Baraz feat. Khalid", "link": "https://www.youtube.com/watch?v=6vopR3ys8Kw" },
+        { "id": 16, "name": "Adorn", "artist": "Miguel", "link": "https://www.youtube.com/watch?v=8dM5QYdTo08" },
+        { "id": 17, "name": "Sky Walker", "artist": "Miguel feat. Travis Scott", "link": "https://www.youtube.com/watch?v=9f5zD7ZSNpQ" },
+        { "id": 18, "name": "Love On Top", "artist": "Beyoncé", "link": "https://www.youtube.com/watch?v=Ob7vObnFUJc" }
+        ],
+        "rock": [
+        { "id": 19, "name": "Mr. Brightside", "artist": "The Killers", "link": "https://www.youtube.com/watch?v=gGdGFtwCNBE" },
+        { "id": 20, "name": "Uptown Girl", "artist": "Billy Joel", "link": "https://www.youtube.com/watch?v=hCuMWrfXG4E" },
+        { "id": 21, "name": "Walking on Sunshine", "artist": "Katrina and the Waves", "link": "https://www.youtube.com/watch?v=iPUmE-tne5U" },
+        { "id": 22, "name": "Are You Gonna Be My Girl", "artist": "Jet", "link": "https://www.youtube.com/watch?v=tuK6n2Lkza0" },
+        { "id": 23, "name": "Best of You", "artist": "Foo Fighters", "link": "https://www.youtube.com/watch?v=h_L4Rixya64" },
+        { "id": 24, "name": "Buddy Holly", "artist": "Weezer", "link": "https://www.youtube.com/watch?v=kemivUKb4f4" }
+        ],
+        "country": [
+        { "id": 25, "name": "Life is a Highway", "artist": "Rascal Flatts", "link": "https://www.youtube.com/watch?v=mvsmRuRp4cM" },
+        { "id": 26, "name": "American Honey", "artist": "Lady A", "link": "https://www.youtube.com/watch?v=Lx0z9FjxInk" },
+        { "id": 27, "name": "Chicken Fried", "artist": "Zac Brown Band", "link": "https://www.youtube.com/watch?v=e4ujS1er1r0" },
+        { "id": 28, "name": "Cruise", "artist": "Florida Georgia Line", "link": "https://www.youtube.com/watch?v=8PvebsWcpto" },
+        { "id": 29, "name": "Wagon Wheel", "artist": "Darius Rucker", "link": "https://www.youtube.com/watch?v=hvKyBcCDOB4" },
+        { "id": 30, "name": "My Front Porch Looking In", "artist": "Lonestar", "link": "https://www.youtube.com/watch?v=MX1QhD6i2FA" }
+        ]
+    },
+    "sad": {
+        "pop": [
+            { "id": 31, "name": "Someone Like You", "artist": "Adele", "link": "https://www.youtube.com/watch?v=hLQl3WQQoQ0" },
+            { "id": 32, "name": "Let Her Go", "artist": "Passenger", "link": "https://www.youtube.com/watch?v=RBumgq5yVrA" },
+            { "id": 33, "name": "Skinny Love", "artist": "Bon Iver", "link": "https://www.youtube.com/watch?v=ssdgFoHLwnk" },
+            { "id": 34, "name": "Fix You", "artist": "Coldplay", "link": "https://www.youtube.com/watch?v=k4V3Mo61fJM" },
+            { "id": 35, "name": "Creep", "artist": "Radiohead", "link": "https://www.youtube.com/watch?v=XFkzRNyygfk" },
+            { "id": 36, "name": "Back to December", "artist": "Taylor Swift", "link": "https://www.youtube.com/watch?v=QUwxKWT6m7U" }
+        ],
+        "rap": [
+            { "id": 37, "name": "Jocelyn Flores", "artist": "XXXTENTACION", "link": "https://www.youtube.com/watch?v=trG6AztzIsk" },
+            { "id": 38, "name": "Love The Way You Lie", "artist": "Eminem ft. Rihanna", "link": "https://www.youtube.com/watch?v=uelHwf8o7_U" },
+            { "id": 39, "name": "Mockingbird", "artist": "Eminem", "link": "https://www.youtube.com/watch?v=S9bCLPwzSC0" },
+            { "id": 40, "name": "How Could You Leave Us", "artist": "NF", "link": "https://www.youtube.com/watch?v=w41h83nsC80" },
+            { "id": 41, "name": "Be Careful", "artist": "Cardi B", "link": "https://www.youtube.com/watch?v=abnE8D_rh2g" },
+            { "id": 42, "name": "I Fall Apart", "artist": "Post Malone", "link": "https://www.youtube.com/watch?v=0g2cnu3Z9Yg" }
+        ],
+        "rnb": [
+            { "id": 43, "name": "It’s So Hard to Say Goodbye", "artist": "Boyz II Men", "link": "https://www.youtube.com/watch?v=0m_giioppT4" },
+            { "id": 44, "name": "Un-break My Heart", "artist": "Toni Braxton", "link": "https://www.youtube.com/watch?v=p2Rch6WvPJE" },
+            { "id": 45, "name": "Almost Doesn't Count", "artist": "Brandy", "link": "https://www.youtube.com/watch?v=HFg5ItG3VYY" },
+            { "id": 46, "name": "We Belong Together", "artist": "Mariah Carey", "link": "https://www.youtube.com/watch?v=0habxsuXW4g" },
+            { "id": 47, "name": "Love", "artist": "Keyshia Cole", "link": "https://www.youtube.com/watch?v=G6PYFR8lo9Y" },
+            { "id": 48, "name": "Ordinary People", "artist": "John Legend", "link": "https://www.youtube.com/watch?v=450p7goxZqg" }
+        ],
+        "rock": [
+            { "id": 49, "name": "Hurt", "artist": "Nine Inch Nails / Johnny Cash", "link": "https://www.youtube.com/watch?v=vt1Pwfnh5pc" },
+            { "id": 50, "name": "Nutshell", "artist": "Alice in Chains", "link": "https://www.youtube.com/watch?v=5gHiR1xeOSs" },
+            { "id": 51, "name": "Tears in Heaven", "artist": "Eric Clapton", "link": "https://www.youtube.com/watch?v=JxPj3GAYYZ0" },
+            { "id": 52, "name": "Black", "artist": "Pearl Jam", "link": "https://www.youtube.com/watch?v=cs-XZ_dN4Hc" },
+            { "id": 53, "name": "Snuff", "artist": "Slipknot", "link": "https://www.youtube.com/watch?v=LqjFZb_j6Tg" },
+            { "id": 54, "name": "Bother", "artist": "Stone Sour", "link": "https://www.youtube.com/watch?v=Q-pXD0FXLQ8" }
+        ]
+    },
+    "angry": {
+        "pop": [
+            { "id": 55, "name": "Stronger", "artist": "Kelly Clarkson", "link": "https://www.youtube.com/watch?v=Xn676-fLq7I" },
+            { "id": 56, "name": "Fighter", "artist": "Christina Aguilera", "link": "https://www.youtube.com/watch?v=PstrAfoMKlc" },
+            { "id": 57, "name": "Bad Blood", "artist": "Taylor Swift", "link": "https://www.youtube.com/watch?v=QcIy9NiNbmo" },
+            { "id": 58, "name": "So What", "artist": "P!nk", "link": "https://www.youtube.com/watch?v=FJfFZqTlWrQ" },
+            { "id": 59, "name": "Blow Me (One Last Kiss)", "artist": "P!nk", "link": "https://www.youtube.com/watch?v=FJfFZqTlWrQ" },
+            { "id": 60, "name": "No", "artist": "Meghan Trainor", "link": "https://www.youtube.com/watch?v=cMTAUr3Nm6I" }
+        ],
+        "rap": [
+            { "id": 61, "name": "Till I Collapse", "artist": "Eminem", "link": "https://www.youtube.com/watch?v=ytQ5CYE1VZw" },
+            { "id": 62, "name": "All the Way Up", "artist": "Fat Joe & Remy Ma", "link": "https://www.youtube.com/watch?v=LiOe2fD9j88" },
+            { "id": 63, "name": "DNA.", "artist": "Kendrick Lamar", "link": "https://www.youtube.com/watch?v=NLZRYQMLDW4" },
+            { "id": 64, "name": "HUMBLE.", "artist": "Kendrick Lamar", "link": "https://www.youtube.com/watch?v=tvTRZJ-4EyI" },
+            { "id": 65, "name": "U Don't Know", "artist": "Jay-Z feat. M.O.P.", "link": "https://www.youtube.com/watch?v=MMX59d23Tn8" },
+            { "id": 66, "name": "Lose Yourself", "artist": "Eminem", "link": "https://www.youtube.com/watch?v=_Yhyp-_hX2s" }
+        ],
+        "rnb": [
+            { "id": 67, "name": "Irreplaceable", "artist": "Beyoncé", "link": "https://www.youtube.com/watch?v=2EwViQxSJJQ" },
+            { "id": 68, "name": "Say My Name", "artist": "Destiny's Child", "link": "https://www.youtube.com/watch?v=sQgd6MccwZc" },
+            { "id": 69, "name": "Love Yourself", "artist": "Justin Bieber", "link": "https://www.youtube.com/watch?v=oyEuk8j8imI" },
+            { "id": 70, "name": "Take a Bow", "artist": "Rihanna", "link": "https://www.youtube.com/watch?v=J3UjJ4wKLkg" },
+            { "id": 71, "name": "Before He Cheats", "artist": "Carrie Underwood", "link": "https://www.youtube.com/watch?v=WaSy8yy-mr8" },
+            { "id": 72, "name": "Bust Your Windows", "artist": "Jazmine Sullivan", "link": "https://www.youtube.com/watch?v=7Dqgr0wNyPo" }
+        ],
+        "rock": [
+            { "id": 73, "name": "Killing In the Name", "artist": "Rage Against the Machine", "link": "https://www.youtube.com/watch?v=bWXazVhlyxQ" },
+            { "id": 74, "name": "Smells Like Teen Spirit", "artist": "Nirvana", "link": "https://www.youtube.com/watch?v=hTWKbfoikeg" },
+            { "id": 75, "name": "In the End", "artist": "Linkin Park", "link": "https://www.youtube.com/watch?v=eVTXPUF4Oz4" },
+            { "id": 76, "name": "Duality", "artist": "Slipknot", "link": "https://www.youtube.com/watch?v=6fVE8kSM43I" },
+            { "id": 77, "name": "Break Stuff", "artist": "Limp Bizkit", "link": "https://www.youtube.com/watch?v=ZpUYjpKg9KY" },
+            { "id": 78, "name": "Headstrong", "artist": "Trapt", "link": "https://www.youtube.com/watch?v=HTvu1Yr3Ohk" }
+        ]
+    },
+    "neutral": {
+        "pop": [
+            { "id": 79, "name": "Counting Stars", "artist": "OneRepublic", "link": "https://www.youtube.com/watch?v=hT_nvWreIhg" },
+            { "id": 80, "name": "Let Her Go", "artist": "Passenger", "link": "https://www.youtube.com/watch?v=RBumgq5yVrA" },
+            { "id": 81, "name": "Budapest", "artist": "George Ezra", "link": "https://www.youtube.com/watch?v=VHrLPs3_1Fs" },
+            { "id": 82, "name": "Stay", "artist": "Zedd & Alessia Cara", "link": "https://www.youtube.com/watch?v=h--P8HzYZ74" },
+            { "id": 83, "name": "Youngblood", "artist": "5 Seconds of Summer", "link": "https://www.youtube.com/watch?v=-RJSbO8UZVY" },
+            { "id": 84, "name": "Say You Won’t Let Go", "artist": "James Arthur", "link": "https://www.youtube.com/watch?v=0yW7w8F2TVA" }
+        ],
+        "rap": [
+            { "id": 85, "name": "God's Plan", "artist": "Drake", "link": "https://www.youtube.com/watch?v=xpVfcZ0ZcFM" },
+            { "id": 86, "name": "Life Goes On", "artist": "Lil Baby", "link": "https://www.youtube.com/watch?v=qGkZPO1Z-Kg" },
+            { "id": 87, "name": "Glorious", "artist": "Macklemore ft. Skylar Grey", "link": "https://www.youtube.com/watch?v=7OrLroFa0AI" },
+            { "id": 88, "name": "Best Day Ever", "artist": "Mac Miller", "link": "https://www.youtube.com/watch?v=AbV-Q6tz4B8" },
+            { "id": 89, "name": "Good Morning", "artist": "Kanye West", "link": "https://www.youtube.com/watch?v=6CHs4x2uqcQ" },
+            { "id": 90, "name": "Keep Ya Head Up", "artist": "2Pac", "link": "https://www.youtube.com/watch?v=HfXwmDGJAB8" }
+        ],
+        "rnb": [
+            { "id": 91, "name": "Location", "artist": "Khalid", "link": "https://www.youtube.com/watch?v=by3yRdlQvzs" },
+            { "id": 92, "name": "Talk", "artist": "Khalid", "link": "https://www.youtube.com/watch?v=hE2Ira-Cwxo" },
+            { "id": 93, "name": "Come Through", "artist": "H.E.R. & Chris Brown", "link": "https://www.youtube.com/watch?v=KqMR0aAh7dI" },
+            { "id": 94, "name": "Good Days", "artist": "SZA", "link": "https://www.youtube.com/watch?v=da1YPlO2LqU" },
+            { "id": 95, "name": "Golden", "artist": "Jill Scott", "link": "https://www.youtube.com/watch?v=Qqiw5DCjGqM" },
+            { "id": 96, "name": "Let Me Love You", "artist": "Mario", "link": "https://www.youtube.com/watch?v=H64QG4UsrGI" }
+        ],
+        "rock": [
+            { "id": 97, "name": "Drive", "artist": "Incubus", "link": "https://www.youtube.com/watch?v=fgT9zGkiLig" },
+            { "id": 98, "name": "No Rain", "artist": "Blind Melon", "link": "https://www.youtube.com/watch?v=3qVPNONdF58" },
+            { "id": 99, "name": "Everlong", "artist": "Foo Fighters", "link": "https://www.youtube.com/watch?v=eBG7P-K-r1Y" },
+            { "id": 100, "name": "The Middle", "artist": "Jimmy Eat World", "link": "https://www.youtube.com/watch?v=oKsxPW6i3pM" },
+            { "id": 101, "name": "Slide", "artist": "Goo Goo Dolls", "link": "https://www.youtube.com/watch?v=yP4qdefD2To" },
+            { "id": 102, "name": "She Will Be Loved", "artist": "Maroon 5", "link": "https://www.youtube.com/watch?v=nIjVuRTm-dc" }
+        ]
+    },
+    "fear": {
+        "pop": [
+            { "id": 103, "name": "Demons", "artist": "Imagine Dragons", "link": "https://www.youtube.com/watch?v=mWRsgZuwf_8" },
+            { "id": 104, "name": "Control", "artist": "Halsey", "link": "https://www.youtube.com/watch?v=soQ7ZME3x7Y" },
+            { "id": 105, "name": "Human", "artist": "Christina Perri", "link": "https://www.youtube.com/watch?v=r5yaoMjaAmE" },
+            { "id": 106, "name": "Haunted", "artist": "Beyoncé", "link": "https://www.youtube.com/watch?v=Y1xs_xPb46M" },
+            { "id": 107, "name": "Mad World", "artist": "Gary Jules", "link": "https://www.youtube.com/watch?v=4N3N1MlvVc4" },
+            { "id": 108, "name": "Everybody’s Fool", "artist": "Evanescence", "link": "https://www.youtube.com/watch?v=jhC1pI76Rqo" }
+        ],
+        "rap": [
+            { "id": 109, "name": "Fear", "artist": "Kendrick Lamar", "link": "https://www.youtube.com/watch?v=xPSzb2bA5i4" },
+            { "id": 110, "name": "The Way I Am", "artist": "Eminem", "link": "https://www.youtube.com/watch?v=1wYNFfgrXTI" },
+            { "id": 111, "name": "Nightmare", "artist": "Hopsin", "link": "https://www.youtube.com/watch?v=XIlG5Jr-zsM" },
+            { "id": 112, "name": "Scared Money", "artist": "YG ft. J. Cole, Moneybagg Yo", "link": "https://www.youtube.com/watch?v=dYjNzGZtnZ4" },
+            { "id": 113, "name": "Darkness", "artist": "Eminem", "link": "https://www.youtube.com/watch?v=RHQC4fAhcbU" },
+            { "id": 114, "name": "Shadowboxin", "artist": "GZA feat. Method Man", "link": "https://www.youtube.com/watch?v=xE7FzYkoA0A" }
+        ],
+        "rnb": [
+            { "id": 115, "name": "Creep", "artist": "TLC", "link": "https://www.youtube.com/watch?v=LlZydtG3xqI" },
+            { "id": 116, "name": "I Care", "artist": "Beyoncé", "link": "https://www.youtube.com/watch?v=0MJkU7gk1tU" },
+            { "id": 117, "name": "Scared to Be Lonely", "artist": "Dua Lipa & Martin Garrix", "link": "https://www.youtube.com/watch?v=e2vBLd5Egnk" },
+            { "id": 118, "name": "Fear", "artist": "Lianne La Havas", "link": "https://www.youtube.com/watch?v=fI4kRTP3S68" },
+            { "id": 119, "name": "Afraid", "artist": "The Neighbourhood", "link": "https://www.youtube.com/watch?v=6qJJf-DHenA" },
+            { "id": 120, "name": "Save Me", "artist": "Jelly Roll", "link": "https://www.youtube.com/watch?v=F4tHL8reNCs" }
+        ],
+        "rock": [
+            { "id": 121, "name": "Enter Sandman", "artist": "Metallica", "link": "https://www.youtube.com/watch?v=CD-E-LDc384" },
+            { "id": 122, "name": "Bring Me to Life", "artist": "Evanescence", "link": "https://www.youtube.com/watch?v=3YxaaGgTQYM" },
+            { "id": 123, "name": "Boulevard of Broken Dreams", "artist": "Green Day", "link": "https://www.youtube.com/watch?v=Soa3gO7tL-c" },
+            { "id": 124, "name": "The Sound of Silence", "artist": "Disturbed", "link": "https://www.youtube.com/watch?v=u9Dg-g7t2l4" },
+            { "id": 125, "name": "In the Shadows", "artist": "The Rasmus", "link": "https://www.youtube.com/watch?v=_ZzQ8D7ZTYM" },
+            { "id": 126, "name": "Toxicity", "artist": "System of a Down", "link": "https://www.youtube.com/watch?v=iywaBOMvYLI" }
+        ]
+    }
+}
+  
