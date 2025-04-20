@@ -1,7 +1,7 @@
 // Backend code written by Dominick Loyola
 // Use case: Manually input mood
 // Collects user mood data and stores it within the database
-// Also allows useer to input their mood manually
+// Also allows user to input their mood manually
 
 import { MongoClient, ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
