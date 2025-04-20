@@ -34,7 +34,7 @@ export default function aiResults() {
 
     const handleGeneratePlaylist = async (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
-        
+
         if (!userId) {
             router.push('/login');
             return;
@@ -96,7 +96,6 @@ export default function aiResults() {
                             <option value="pop">Pop</option>
                             <option value="rock">Rock</option>
                             <option value="hiphop">Rap</option>
-                            <option value="country">Country</option>
                             <option value="rnb">R&B</option>
                         </select>
                     </div>

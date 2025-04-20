@@ -10,9 +10,9 @@ import NavbarWhite from "../../../components/navbarWhite"
 
 export default function Dashboard() {
     const [playlists, setPlaylists] = useState([
-        { id: 1, name: "Playlist #1" },
-        { id: 2, name: "Playlist #2" },
-        { id: 3, name: "Playlist #3" }
+        { id: 1, name: "Rainy Day Blues" },
+        { id: 2, name: "Morning Vibes" },
+        { id: 3, name: "Feel Good Songs" }
     ]);
 
     const router = useRouter();

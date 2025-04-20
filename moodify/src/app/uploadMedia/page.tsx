@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../page.module.css";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../../../components/navbar";
 import { CiVideoOn } from "react-icons/ci";
@@ -14,24 +14,59 @@ import { CiCamera } from "react-icons/ci";
 export default function UploadMedia() {
     const router = useRouter();
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
+    const [file, setFile] = useState<File | null>(null);
+
+    const imageInputRef = useRef<HTMLInputElement>(null);
+    const videoInputRef = useRef<HTMLInputElement>(null);
+
 
     const handleOptionSelect = (option: string) => {
         setSelectedOption(option);
+        if (option === 'image' && imageInputRef.current) {
+            imageInputRef.current.click();
+        } else if (option === 'video' && videoInputRef.current) {
+            videoInputRef.current.click();
+        } else if (option === 'camera') {
+            // handle camera selection later
+        }
     };
 
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = event.target.files?.[0];
+        if (selectedFile) {
+            setFile(selectedFile);
+            console.log("Selected File:", selectedFile.name);
+        }
+    };
 
     const handleUpload = () => {
-        if (selectedOption) {
-            console.log(`Uploading ${selectedOption}`);
-            router.push("/aiResults");
-        } else {
-            console.log("No option selected");
+        if (!selectedOption || !file) {
+            console.log("No option or file selected");
+            return;
         }
+
+        console.log(`Uploading ${selectedOption}:`, file.name);
+        router.push("/aiResults");
     };
 
     return (
         <div className={styles.pageGreen}>
             <Navbar activePage="ai" />
+            {/* Hidden File Inputs */}
+            <input
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                ref={imageInputRef}
+                onChange={handleFileChange}
+            />
+            <input
+                type="file"
+                accept="video/*"
+                style={{ display: 'none' }}
+                ref={videoInputRef}
+                onChange={handleFileChange}
+            />
             <main className={styles.main}>
                 <div className={styles.whiteContainer}>
                     <Link href="/dashboard" className={styles.exit}>×</Link>
