@@ -42,10 +42,10 @@ export default function Dashboard() {
             <main style={{
                 paddingTop: '120px',
                 width: '100%',
-                maxWidth: '1200px',
+                paddingLeft: '120px',
+                paddingRight: '120px',
                 margin: '0 auto',
                 fontFamily: "'Actor', sans-serif",
-                minHeight: 'calc(100vh - 80px)'
             }}>
                 <h1 style={{
                     fontSize: '3.5rem',
@@ -55,7 +55,7 @@ export default function Dashboard() {
                     fontWeight: 'normal',
                     letterSpacing: '1px'
                 }}>
-                    WELCOME, {username.toUpperCase()}!
+                    Welcome to your Dashboard!
                 </h1>
 
                 <div style={{
@@ -80,7 +80,7 @@ export default function Dashboard() {
                         minHeight: '250px'
                     }}>
                         <h2 style={{ fontSize: '2rem', marginBottom: '20px', fontWeight: 'bold' }}>
-                            AI MOOD DETECTION
+                            AI Mood Detection
                         </h2>
                         <p style={{ textAlign: 'center', marginBottom: '30px', fontSize: '1.1rem' }}>
                             Analyze your mood instantly! Upload a photo to generate the perfect playlist.
@@ -109,16 +109,11 @@ export default function Dashboard() {
                         color: '#FBFEF4'
                     }}>
                         <h2 style={{ fontSize: '2rem', marginBottom: '20px', fontWeight: 'bold' }}>
-                            RECENT PLAYLISTS
+                            Recent Playlists
                         </h2>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', width: '100%' }}>
                             {playlists.map((playlist) => (
-                                <div key={playlist.id} style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    padding: '10px 0'
-                                }}>
+                                <div key={playlist.id} className={styles.specificPlaylist}>
                                     <p style={{ fontSize: '1.3rem' }}>{playlist.name}</p>
                                     <button onClick={() => handleExpandPlaylist(playlist.id)} style={{
                                         backgroundColor: '#FBFEF4',
@@ -152,7 +147,7 @@ export default function Dashboard() {
                         minHeight: '200px'
                     }}>
                         <h2 style={{ fontSize: '2rem', marginBottom: '20px', fontWeight: 'bold' }}>
-                            MANUAL MOOD INPUT
+                            Manual Mood Input
                         </h2>
                         <p style={{
                             textAlign: 'center',
