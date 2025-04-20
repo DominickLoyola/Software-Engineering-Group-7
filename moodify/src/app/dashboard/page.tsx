@@ -3,22 +3,58 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../page.module.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import NavbarWhite from "../../../components/navbarWhite"
-
+import NavbarWhite from "../../../components/navbarWhite";
 
 export default function Dashboard() {
-    const [playlists, setPlaylists] = useState([
-        { id: 1, name: "Rainy Day Blues" },
-        { id: 2, name: "Morning Vibes" },
-        { id: 3, name: "Feel Good Songs" }
-    ]);
-
+    const [playlists, setPlaylists] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [username, setUsername] = useState("");
     const router = useRouter();
-    const username = "John";
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                router.push('/login');
+                return;
+            }
+
+            try {
+                // Fetch user data
+                const userResponse = await fetch(`/api/user/${userId}`);
+                const userData = await userResponse.json();
+                
+                if (!userResponse.ok) {
+                    throw new Error(userData.message || 'Failed to fetch user data');
+                }
+                
+                setUsername(userData.username);
+
+                // Fetch playlists
+                const playlistsResponse = await fetch(`/api/playlist?userId=${userId}`);
+                const playlistsData = await playlistsResponse.json();
+                
+                if (!playlistsResponse.ok) {
+                    throw new Error(playlistsData.message || 'Failed to fetch playlists');
+                }
+                
+                setPlaylists(playlistsData.playlists || []);
+            } catch (err) {
+                console.error('Error fetching dashboard data:', err);
+                setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserData();
+    }, [router]);
 
     const handleLogout = () => {
+        localStorage.removeItem('userId');
         router.push("/login");
     };
 
@@ -30,9 +66,31 @@ export default function Dashboard() {
         router.push("/manualMoodInput");
     };
 
-    const handleExpandPlaylist = (id: number) => {
-        console.log(`Expanding playlist ${id}`);
+    const handleExpandPlaylist = (playlistId: string) => {
+        router.push(`/playlist/${playlistId}`);
     };
+
+    if (loading) {
+        return (
+            <div className={styles.page}>
+                <NavbarWhite activePage="dashboard" />
+                <main style={{ paddingTop: '120px', textAlign: 'center' }}>
+                    <h1>Loading...</h1>
+                </main>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className={styles.page}>
+                <NavbarWhite activePage="dashboard" />
+                <main style={{ paddingTop: '120px', textAlign: 'center' }}>
+                    <h1 style={{ color: 'red' }}>{error}</h1>
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.page}>
@@ -55,7 +113,7 @@ export default function Dashboard() {
                     fontWeight: 'normal',
                     letterSpacing: '1px'
                 }}>
-                    Welcome to your Dashboard!
+                    Welcome to your dashboard, {username}!
                 </h1>
 
                 <div style={{
@@ -112,22 +170,28 @@ export default function Dashboard() {
                             Recent Playlists
                         </h2>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', width: '100%' }}>
-                            {playlists.map((playlist) => (
-                                <div key={playlist.id} className={styles.specificPlaylist}>
-                                    <p style={{ fontSize: '1.3rem' }}>{playlist.name}</p>
-                                    <button onClick={() => handleExpandPlaylist(playlist.id)} style={{
-                                        backgroundColor: '#FBFEF4',
-                                        color: '#254D32',
-                                        padding: '8px 20px',
-                                        borderRadius: '20px',
-                                        border: 'none',
-                                        fontSize: '0.9rem',
-                                        cursor: 'pointer'
-                                    }}>
-                                        expand
-                                    </button>
-                                </div>
-                            ))}
+                            {playlists.length > 0 ? (
+                                playlists.map((playlist) => (
+                                    <div key={playlist._id} className={styles.specificPlaylist}>
+                                        <p style={{ fontSize: '1.3rem' }}>{playlist.name}</p>
+                                        <button onClick={() => handleExpandPlaylist(playlist._id)} style={{
+                                            backgroundColor: '#FBFEF4',
+                                            color: '#254D32',
+                                            padding: '8px 20px',
+                                            borderRadius: '20px',
+                                            border: 'none',
+                                            fontSize: '0.9rem',
+                                            cursor: 'pointer'
+                                        }}>
+                                            expand
+                                        </button>
+                                    </div>
+                                ))
+                            ) : (
+                                <p style={{ textAlign: 'center', fontSize: '1.1rem' }}>
+                                    No playlists have been made yet. Create one by detecting your mood!
+                                </p>
+                            )}
                         </div>
                     </div>
 
