@@ -1,43 +1,55 @@
 import torch
 import cv2
 import numpy as np
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
+from collections import Counter
 from facenet_pytorch import MTCNN, InceptionResnetV1
 from deepface import DeepFace
-from collections import Counter
+import os
 
 class FacialDetector:
     def __init__(self, device=None):
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu') if device is None else device
-
         print(f"Using device: {self.device}")
-        
-        self.mtcnn = MTCNN(
-            image_size=160, margin=0, min_face_size=20,
-            thresholds=[0.6, 0.7, 0.7], factor=0.709,
-            post_process=True, device=self.device
-        )
+
+        self.mtcnn = MTCNN(image_size=160, margin=0, min_face_size=20,
+                           thresholds=[0.6, 0.7, 0.7], factor=0.709,
+                           post_process=True, device=self.device)
+
         self.facenet = InceptionResnetV1(pretrained='vggface2').eval().to(self.device)
 
     def process_pil_image(self, img):
         if isinstance(img, np.ndarray):
             img = Image.fromarray(img)
-        boxes, _ = self.mtcnn.detect(img)
-        emotions = self.analyze_emotions(img)
+        boxes, emotions = self.analyze_emotions(img)
         return boxes, emotions
 
     def analyze_emotions(self, img):
         try:
             if isinstance(img, Image.Image):
-                img = np.array(img)
-            analysis = DeepFace.analyze(img_path=img, actions=['emotion'], enforce_detection=False)
-            emotion_dict = analysis[0]["emotion"] if isinstance(analysis, list) else analysis["emotion"]
-            top_emotion = max(emotion_dict, key=emotion_dict.get)
-            top_score = emotion_dict[top_emotion]
-            return top_emotion, top_score, emotion_dict
+                img_np = np.array(img)
+            else:
+                img_np = img
+
+            boxes, _ = self.mtcnn.detect(img)
+            if boxes is None or len(boxes) == 0:
+                print("❌ No face detected for emotion analysis.")
+                return None, []
+
+            x1, y1, x2, y2 = [int(coord) for coord in boxes[0]]
+            face_crop = img_np[y1:y2, x1:x2]
+
+            analysis = DeepFace.analyze(img_path=face_crop, actions=['emotion'], enforce_detection=False)
+            emotions = analysis[0]['emotion'] if isinstance(analysis, list) else analysis['emotion']
+
+            sorted_emotions = sorted(emotions.items(), key=lambda x: x[1], reverse=True)
+            top_3 = [(emotion, score) for emotion, score in sorted_emotions[:3]]
+
+            return boxes, top_3
+
         except Exception as e:
             print("Emotion analysis failed:", str(e))
-            return "unknown", 0.0, {}
+            return None, []
 
     def process_video(self, video_path):
         cap = cv2.VideoCapture(video_path)
@@ -47,40 +59,36 @@ class FacialDetector:
 
         print("📹 Processing video... Press 'q' to stop.")
         emotion_log = []
-        frame_idx = 0
 
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
-                print("⚠️ Finished reading video or failed to grab frame.")
                 break
 
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             img = Image.fromarray(frame_rgb)
 
-            boxes, emotion_info = self.process_pil_image(img)
+            boxes, top_emotions = self.analyze_emotions(img)
+            if top_emotions:
+                emotion_log.append(top_emotions[0][0])
+
             frame = self.draw_boxes(frame, boxes)
-
-            if isinstance(emotion_info, tuple):
-                top_emotion, score, _ = emotion_info
-                emotion_log.append(top_emotion)
-
             cv2.imshow("Video Feed", frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-            frame_idx += 1
 
         cap.release()
         cv2.destroyAllWindows()
-
         self.summarize_emotions(emotion_log)
 
     def process_webcam(self):
         cap = cv2.VideoCapture(0)
-        last_emotion_text = ""
-        emotion_log = []
-        frame_idx = 0
+        if not cap.isOpened():
+            print("❌ Could not access the webcam. Please check your camera connection.")
+            return
 
+        emotion_log = []
+        print("📷 Webcam active. Press 'e' to analyze, 'q' to quit.")
         while cap.isOpened():
             ret, frame = cap.read()
             if not ret:
@@ -88,9 +96,6 @@ class FacialDetector:
 
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             img = Image.fromarray(frame_rgb)
-
-            boxes, _ = self.mtcnn.detect(img)
-            frame = self.draw_boxes(frame, boxes, last_emotion_text)
 
             cv2.imshow("Webcam Feed", frame)
             key = cv2.waitKey(1) & 0xFF
@@ -98,76 +103,89 @@ class FacialDetector:
             if key == ord('q'):
                 break
             elif key == ord('e'):
-                print("🔍 Capturing emotion...")
-                boxes, emotion_info = self.process_pil_image(img)
-                if isinstance(emotion_info, tuple):
-                    top_emotion, score, _ = emotion_info
-                    emotion_log.append(top_emotion)
-                    last_emotion_text = f"{top_emotion} ({score:.1f}%)"
-                    print(f"Emotion Detected: {last_emotion_text}")
-                else:
-                    print("Could not determine emotion.")
-
-            frame_idx += 1
+                boxes, top_emotions = self.analyze_emotions(img)
+                if top_emotions:
+                    emotion_log.append(top_emotions[0][0])
+                    print(f"Detected: {top_emotions[0][0]}")
 
         cap.release()
         cv2.destroyAllWindows()
         self.summarize_emotions(emotion_log)
 
     def summarize_emotions(self, emotion_log):
-        """ Summarize frequency of each detected emotion as % """
         if not emotion_log:
             print("No emotions detected.")
             return
 
-        emotion_count = Counter(emotion_log)
-        total = len(emotion_log)
+        counts = Counter(emotion_log)
+        top_3 = counts.most_common(3)
 
-        print("\n🧠 Overall Emotion Summary:")
-        for emotion, count in emotion_count.items():
-            percent = (count / total) * 100
-            print(f"{emotion}: {percent:.1f}%")
+        if len(top_3) == 1:
+            summary = f"You mostly appeared to be {top_3[0][0]}."
+        elif len(top_3) == 2:
+            summary = f"You mostly appeared to be {top_3[0][0]}, with some expressions of {top_3[1][0]}."
+        else:
+            summary = (
+                f"You mostly appeared to be {top_3[0][0]}, but also showed signs of {top_3[1][0]} and {top_3[2][0]}."
+            )
 
-    def draw_boxes(self, frame, boxes, label_text=None):
+        print(f"\n🧠 {summary}")
+
+    def draw_boxes(self, frame, boxes):
         if boxes is not None:
             for box in boxes:
                 x1, y1, x2, y2 = [int(coord) for coord in box]
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                if label_text:
-                    cv2.putText(frame, label_text, (x1, y1 - 10),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
         return frame
 
-# ===============================
-#          MAIN PROGRAM
-# ===============================
 if __name__ == "__main__":
     detector = FacialDetector()
 
-    action = input("Select action: 1 for image, 2 for video, 3 for webcam\n")
+    while True:
+        action = input("Select action: 1 for image, 2 for video, 3 for webcam\n")
+        if action in ['1', '2', '3']:
+            break
+        print("Invalid input. Please enter 1, 2, or 3.")
 
     if action == '1':
-        img_path = input("Enter the path to the image file: ")
-        img = Image.open(img_path)
-        boxes, emotion_info = detector.process_pil_image(img)
-        if isinstance(emotion_info, tuple):
-            top_emotion, score, all_emotions = emotion_info
-            print(f"Detected faces: {len(boxes) if boxes is not None else 0}")
-            print(f"Top Emotion: {top_emotion} ({score:.2f}%)")
-            print("All Emotions:", all_emotions)
+        while True:
+            img_path = input("Enter the path to the image file: ")
+            if os.path.isfile(img_path):
+                try:
+                    img = Image.open(img_path)
+                    break
+                except UnidentifiedImageError:
+                    print("❌ Invalid image file. Please try again.")
+            else:
+                print("❌ File not found. Please enter a valid image path.")
+
+        _, top_emotions = detector.process_pil_image(img)
+        if top_emotions:
+            if len(top_emotions) == 1:
+                summary = f"You mostly appeared to be {top_emotions[0][0]}."
+            elif len(top_emotions) == 2:
+                summary = f"You mostly appeared to be {top_emotions[0][0]}, with some expressions of {top_emotions[1][0]}."
+            else:
+                summary = (
+                    f"You mostly appeared to be {top_emotions[0][0]}, but also showed signs of {top_emotions[1][0]} and {top_emotions[2][0]}."
+                )
+            print(f"\n🧠 {summary}")
         else:
-            print("Could not determine emotion.")
+            print("No emotions detected.")
 
     elif action == '2':
-        video_path = input("Enter the path to the video file: ")
-        detector.process_video(video_path)
+        while True:
+            video_path = input("Enter the path to the video file: ")
+            if os.path.isfile(video_path):
+                detector.process_video(video_path)
+                break
+            else:
+                print("❌ File not found. Please enter a valid video path.")
 
     elif action == '3':
-        print("Starting webcam feed. Press 'e' to analyze emotion, 'q' to quit.")
         detector.process_webcam()
 
-    else:
-        print("Invalid action selected.")
+
 
 
 #Aman
