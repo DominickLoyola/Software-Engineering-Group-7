@@ -1,46 +1,37 @@
-//code written by Rishna Renikunta
+//code written by Rishna Renikunta and Chris Kennedy
 //use case: Log into Moodify
 //renders login page for the Moodify application
 //it collects a username and password and routes the user to the dashboard on successful login
 // will notify the users if a field is empty
 
 'use client';
-
-import Image from "next/image";
-import Link from "next/link";
-import styles from "../page.module.css";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
+import styles from '../page.module.css';
 
 export default function Login() {
-
-  //state variables to store user input and error handling
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  //handles login logic
   const handleLogin = async () => {
     if (!username || !password) {
-      setError("Please fill in all fields");
+      setError('Please fill in all fields');
       return;
     }
 
     setIsLoading(true);
-    setError("");
+    setError('');
 
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username,
-          password
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
@@ -50,28 +41,26 @@ export default function Login() {
         return;
       }
 
-      // Store the user ID in localStorage
-      localStorage.setItem('userId', data.userId);
+      // Store all user data in sessionStorage
+      sessionStorage.setItem('moodifyUser', JSON.stringify({
+        userId: data.userId,
+        username: data.username,
+        joinDate: data.joinDate,
+        topMoods: data.topMoods
+      }));
       
-      // Navigate to dashboard
-      router.push("/dashboard");
+      router.push('/dashboard');
     } catch (err) {
-      setError("Login failed");
+      setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
       setIsLoading(false);
     }
   };
 
-  //displays login page to user
   return (
     <div className={styles.pageGreen}>
       <div className={styles.logoHeader}>
-          <Image
-            src="/logo2.png"
-            alt="Next.js logo"
-            width={180}
-            height={80}
-          />
+        <Image src="/logo2.png" alt="Moodify Logo" width={180} height={80} />
       </div>
       <main className={styles.main}>
         <div className={styles.userAuth}>
@@ -79,47 +68,47 @@ export default function Login() {
           {error && <p style={{ color: '#b3362d', marginBottom: '15px', textAlign: 'center' }}>{error}</p>}
           <div className={styles.form}>
             <div className={styles.inputSet}>
-              <label style={{ fontWeight: 'bold', fontSize: '1.2rem' }} htmlFor="username">Username</label>
-              <div>
-                <input
-                  className={styles.input}
-                  type="text"
-                  id="username"
-                  placeholder="Enter your username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  style={{
-                    border: `3px solid ${error && !username ? "#b3362d" : "#181D27"}`,
-                  }}
-                />
-                {error && !username && (<p style={{ color: '#b3362d', marginTop: '5px', textAlign: 'left' }}>Please enter your username</p>)}
-              </div>
+              <label style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>Username</label>
+              <input
+                className={styles.input}
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                style={{ border: `3px solid ${error && !username ? "#b3362d" : "#181D27"}` }}
+              />
+              {error && !username && (
+                <p style={{ color: '#b3362d', marginTop: '5px' }}>Please enter username</p>
+              )}
             </div>
             <div className={styles.inputSet}>
-              <label style={{ fontWeight: 'bold', fontSize: '1.2rem' }} htmlFor="password">Password</label>
-              <div>
-                <input
-                  className={styles.input}
-                  type="password"
-                  id="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  style={{
-                    border: `3px solid ${error && !password ? "#b3362d" : "#181D27"}`,
-                  }}
-                />
-                {error && !password && (<p style={{ color: '#b3362d', marginTop: '5px', textAlign: 'left' }}>Please enter your password</p>)}
-              </div>
+              <label style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>Password</label>
+              <input
+                className={styles.input}
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={{ border: `3px solid ${error && !password ? "#b3362d" : "#181D27"}` }}
+              />
+              {error && !password && (
+                <p style={{ color: '#b3362d', marginTop: '5px' }}>Please enter password</p>
+              )}
             </div>
-            <button onClick={handleLogin} className={styles.loginSignupButton}>
-              Login
+            {error && username && password && (
+              <p style={{ color: '#b3362d', margin: '10px 0' }}>{error}</p>
+            )}
+            <button 
+              onClick={handleLogin} 
+              className={styles.loginSignupButton}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Logging in...' : 'Login'}
             </button>
           </div>
+          <p className={styles.accountDescription}>
+            Don't have an account?{' '}
+            <Link href="/signup" style={{ textDecoration: 'underline' }}>Sign Up</Link>
+          </p>
         </div>
-        <p className={styles.accountDescription}>
-          Don't have an account? <Link href="/signup" style={{ textDecoration: 'underline', textUnderlineOffset: '10px' }}>Sign Up</Link>
-        </p>
       </main>
     </div>
   );

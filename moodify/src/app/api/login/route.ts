@@ -1,8 +1,3 @@
-// Backend code written by Dominick Loyola
-// Use case: Login to Moodify
-// Collects user username and passwords. Also validates them against the database
-// Returns a success message on successful login
-
 import { MongoClient } from 'mongodb';
 import { NextResponse } from 'next/server';
 
@@ -11,14 +6,12 @@ const dbName = process.env.MONGODB_DB || "userinfo";
 
 export async function POST(request: Request) {
   let client;
-  
   try {
     const { username, password } = await request.json();
 
-    // Validate input
     if (!username || !password) {
       return NextResponse.json(
-        { message: "Username and password are required" },
+        { success: false, message: "Username and password are required" },
         { status: 400 }
       );
     }
@@ -27,38 +20,33 @@ export async function POST(request: Request) {
     const db = client.db(dbName);
     const usersCollection = db.collection('users');
 
-    // First check if user exists
-    const userExists = await usersCollection.findOne({ username });
-    if (!userExists) {
-      return NextResponse.json(
-        { message: "Username not found. Please check your username or sign up." },
-        { status: 401 }
-      );
-    }
-
-    // Then check if password matches
-    const user = await usersCollection.findOne({ username, password });
+    // Direct plain text comparison
+    const user = await usersCollection.findOne({ 
+      username,
+      password // Comparing exactly as stored
+    });
+    
     if (!user) {
       return NextResponse.json(
-        { message: "Incorrect password. Please try again." },
+        { success: false, message: "Invalid credentials" },
         { status: 401 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      userId: user._id.toString()
+      userId: user._id.toString(),
+      username: user.username,
+      joinDate: user.createdAt
     });
 
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { success: false, message: "Internal server error" },
       { status: 500 }
     );
   } finally {
-    if (client) {
-      await client.close();
-    }
+    await client?.close();
   }
-} 
+}
