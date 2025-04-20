@@ -102,11 +102,11 @@ export default function Login() {
               {isLoading ? 'Logging in...' : 'Login'}
             </button>
           </div>
-          <p className={styles.accountDescription}>
+        </div>
+        <p className={styles.accountDescription}>
             Don't have an account?{' '}
             <Link href="/signup" style={{ textDecoration: 'underline' }}>Sign Up</Link>
           </p>
-        </div>
       </main>
     </div>
   );
