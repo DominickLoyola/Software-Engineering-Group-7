@@ -1,6 +1,6 @@
 // Dashboard backend code written by Dominick Loyola
 // Use case: Track listening history and genres user liked
-// Uses users stored data within database,
+// Uses user's stored data within database,
 // and returns 3 most recent playlists
 
 import { MongoClient, ObjectId } from 'mongodb';
