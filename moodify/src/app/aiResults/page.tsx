@@ -91,15 +91,17 @@ export default function aiResults() {
                     </div>
                     <div className={styles.inputSetMood}>
                         <h2>Preferred Genre</h2>
-                        <select className={styles.selectBox}>
+                        <select className={styles.selectBox} value={genre} onChange={(e) => setGenre(e.target.value)}>
                             <option value="">Select a genre</option>
                             <option value="pop">Pop</option>
                             <option value="rock">Rock</option>
-                            <option value="hiphop">Rap</option>
+                            <option value="rap">Rap</option>
+                            <option value="country">Country</option>
                             <option value="rnb">R&B</option>
                         </select>
                     </div>
-                    <Link href="/playlistResults" className={styles.greenButton}>Generate Playlist</Link>
+                    <Link href={`/playlistResults?mood=${encodeURIComponent(mood)}&genre=${encodeURIComponent(genre)}`}className={styles.greenButton}>Generate Playlist</Link> 
+
                 </div>
             </main>
         </div>
