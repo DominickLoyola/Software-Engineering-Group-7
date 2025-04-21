@@ -589,3 +589,105 @@
 .songItemNew {
   margin-top: 4px;
 }
+
+/* Add these styles to your existing CSS */
+
+.songList {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.songItemContainer {
+  margin-bottom: 15px;
+}
+
+.songItem {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  background-color: #f8f5f0; /* Beige-ish background */
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.songItem:hover {
+  background-color: #f0e9e0;
+}
+
+.heartButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 15px;
+  padding: 5px;
+}
+
+.songInfo {
+  flex: 1;
+  text-align: left;
+}
+
+.songName {
+  font-weight: 600;
+  margin: 0 0 3px 0;
+  color: #333;
+  font-size: 1.05rem;
+}
+
+.artistName {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.expandButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 5px;
+  color: #666;
+}
+
+.linkButton {
+  margin-left: 10px;
+  color: #666;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.songDetails {
+  padding: 12px 15px;
+  background-color: #f8f5f0;
+  border-radius: 0 0 8px 8px;
+  margin-top: -8px;
+  border-top: 1px solid #e0d9d0;
+}
+
+.songDetail {
+  margin: 5px 0;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.detailLabel {
+  font-weight: 600;
+  color: #444;
+}
+
+.emptyState {
+  text-align: center;
+  color: #666;
+  padding: 30px;
+  font-size: 1.1rem;
+}
+
+/* Adjust title spacing */
+.title {
+  margin-bottom: 25px;
+}
+
+.whiteContainer {
+  padding-top: 30px;
+}
