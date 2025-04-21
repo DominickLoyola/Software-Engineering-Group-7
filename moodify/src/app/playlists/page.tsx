@@ -23,11 +23,11 @@ interface Playlist {
 
 export default function PlaylistsPage() {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
-    const [editingId, setEditingId] = useState<string | null>(null);
-    const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
-    const [titleInput, setTitleInput] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [expandedIds, setExpandedIds] = useState(new Set<string>());
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [titleInput, setTitleInput] = useState("");
     const router = useRouter();
 
     useEffect(() => {
@@ -40,9 +40,7 @@ export default function PlaylistsPage() {
 
             try {
                 const userData = JSON.parse(storedData);
-                const userId = userData.userId;
-
-                const response = await fetch(`/api/playlist?userId=${userId}`);
+                const response = await fetch(`/api/playlist?userId=${userData.userId}`);
                 const data = await response.json();
 
                 if (!response.ok) {
@@ -61,54 +59,6 @@ export default function PlaylistsPage() {
         fetchPlaylists();
     }, [router]);
 
-    const handleEdit = async (id: string, currentTitle: string) => {
-        setEditingId(id);
-        setTitleInput(currentTitle);
-    };
-
-    const handleSave = async (id: string) => {
-        try {
-            const response = await fetch(`/api/playlist/${id}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name: titleInput }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update playlist name');
-            }
-
-            setPlaylists(prev =>
-                prev.map(playlist =>
-                    playlist._id === id ? { ...playlist, name: titleInput } : playlist
-                )
-            );
-            setEditingId(null);
-        } catch (error) {
-            console.error('Error updating playlist:', error);
-            alert('Failed to update playlist name');
-        }
-    };
-
-    const handleDelete = async (id: string) => {
-        try {
-            const response = await fetch(`/api/playlist/${id}`, {
-                method: 'DELETE',
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to delete playlist');
-            }
-
-            setPlaylists(prev => prev.filter(playlist => playlist._id !== id));
-        } catch (error) {
-            console.error('Error deleting playlist:', error);
-            alert('Failed to delete playlist');
-        }
-    };
-
     const toggleExpand = (id: string) => {
         setExpandedIds(prev => {
             const newSet = new Set(prev);
@@ -119,6 +69,71 @@ export default function PlaylistsPage() {
             }
             return newSet;
         });
+    };
+
+    const startEditing = (playlist: Playlist) => {
+        setEditingId(playlist._id);
+        setTitleInput(playlist.name);
+    };
+
+    const saveTitle = async (playlistId: string) => {
+        if (!titleInput.trim()) {
+            alert("Please enter a playlist name");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/playlist/${playlistId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: titleInput }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to update playlist');
+            }
+
+            // Update the playlist name in the local state
+            setPlaylists(prev =>
+                prev.map(p =>
+                    p._id === playlistId
+                        ? { ...p, name: titleInput }
+                        : p
+                )
+            );
+
+            setEditingId(null);
+        } catch (err) {
+            console.error('Error updating playlist:', err);
+            alert('Failed to update playlist name');
+        }
+    };
+
+    const deletePlaylist = async (playlistId: string) => {
+        if (!window.confirm('Are you sure you want to delete this playlist?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/playlist/${playlistId}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to delete playlist');
+            }
+
+            // Remove the playlist from the local state
+            setPlaylists(prev => prev.filter(p => p._id !== playlistId));
+        } catch (err) {
+            console.error('Error deleting playlist:', err);
+            alert('Failed to delete playlist');
+        }
     };
 
     if (loading) {
@@ -140,6 +155,7 @@ export default function PlaylistsPage() {
                 <Navbar activePage="playlists" />
                 <main className={styles.main}>
                     <div className={styles.whiteContainer}>
+                        <Link href="/dashboard" className={styles.exit}>×</Link>
                         <h1 className={styles.title}>Error: {error}</h1>
                     </div>
                 </main>
@@ -168,21 +184,33 @@ export default function PlaylistsPage() {
                                         ) : (
                                             <h2 className={styles.playlistTitle}>{playlist.name}</h2>
                                         )}
-                                        <div>
+                                        <div className={styles.iconGroupNew}>
                                             {editingId === playlist._id ? (
-                                                <button onClick={() => handleSave(playlist._id)} title="Save" className={styles.iconButtonNew}>
-                                                    <FaSave size={16} />
+                                                <button
+                                                    onClick={() => saveTitle(playlist._id)}
+                                                    className={styles.iconButtonNew}
+                                                >
+                                                    <FaSave />
                                                 </button>
                                             ) : (
-                                                <button onClick={() => handleEdit(playlist._id, playlist.name)} title="Edit" className={styles.iconButtonNew}>
-                                                    <FaEdit size={16} />
+                                                <button
+                                                    onClick={() => startEditing(playlist)}
+                                                    className={styles.iconButtonNew}
+                                                >
+                                                    <FaEdit />
                                                 </button>
                                             )}
-                                            <button onClick={() => toggleExpand(playlist._id)} title="Expand/Collapse" className={styles.iconButtonNew}>
-                                                {expandedIds.has(playlist._id) ? <FaChevronUp size={16} /> : <FaChevronDown size={16} />}
+                                            <button
+                                                onClick={() => deletePlaylist(playlist._id)}
+                                                className={styles.iconButtonNew}
+                                            >
+                                                <FaTrash />
                                             </button>
-                                            <button onClick={() => handleDelete(playlist._id)} title="Delete" className={styles.iconButtonNew}>
-                                                <FaTrash size={16} />
+                                            <button
+                                                onClick={() => toggleExpand(playlist._id)}
+                                                className={styles.iconButtonNew}
+                                            >
+                                                {expandedIds.has(playlist._id) ? <FaChevronUp /> : <FaChevronDown />}
                                             </button>
                                         </div>
                                     </div>
@@ -190,7 +218,14 @@ export default function PlaylistsPage() {
                                         <ul className={styles.songListNew}>
                                             {playlist.songs.map((song, i) => (
                                                 <li key={i} className={styles.songItemNew}>
-                                                    {song.name} - {song.artist}
+                                                    <a
+                                                        href={song.link}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className={styles.songLink}
+                                                    >
+                                                        {song.name} - {song.artist}
+                                                    </a>
                                                 </li>
                                             ))}
                                         </ul>

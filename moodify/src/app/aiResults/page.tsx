@@ -41,6 +41,11 @@ export default function aiResults() {
             return;
         }
 
+        if (!mood || !genre) {
+            alert("Please select both a mood and a genre.");
+            return;
+        }
+
         setIsLoading(true);
 
         try {
@@ -93,7 +98,11 @@ export default function aiResults() {
                     </div>
                     <div className={styles.inputSetMood}>
                         <h2>Preferred Genre</h2>
-                        <select className={styles.selectBox}>
+                        <select 
+                            className={styles.selectBox}
+                            value={genre}
+                            onChange={(e) => setGenre(e.target.value)}
+                        >
                             <option value="">Select a genre</option>
                             <option value="pop">Pop</option>
                             <option value="rock">Rock</option>

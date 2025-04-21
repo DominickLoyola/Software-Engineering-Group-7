@@ -9,9 +9,9 @@ const dbName = process.env.MONGODB_DB || "userinfo";
 export async function POST(req: Request) {
   let client;
   try {
-    const { userId, name, songs } = await req.json();
+    const { userId, name, mood, genre, songs } = await req.json();
 
-    if (!userId || !name || !songs) {
+    if (!userId || !name || !songs || !mood || !genre) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -37,6 +37,8 @@ export async function POST(req: Request) {
     const result = await playlists.insertOne({
       userId: new ObjectId(userId),
       name,
+      mood,
+      genre,
       songs,
       createdAt: new Date()
     });

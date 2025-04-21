@@ -26,25 +26,16 @@ export default function Dashboard() {
             const userData = JSON.parse(storedData);
             const userId = userData.userId;
 
-            // Fetch user data
-            const userResponse = await fetch(`/api/user/${userId}`);
-            const fetchedUserData = await userResponse.json();
+            // Fetch dashboard data (includes user info and recent playlists)
+            const dashboardResponse = await fetch(`/api/dashboard?userId=${userId}`);
+            const dashboardData = await dashboardResponse.json();
             
-            if (!userResponse.ok) {
-                throw new Error(fetchedUserData.message || 'Failed to fetch user data');
+            if (!dashboardResponse.ok) {
+                throw new Error(dashboardData.message || 'Failed to fetch dashboard data');
             }
             
-            setUsername(fetchedUserData.username);
-
-            // Fetch playlists
-            const playlistsResponse = await fetch(`/api/playlist?userId=${userId}`);
-            const playlistsData = await playlistsResponse.json();
-            
-            if (!playlistsResponse.ok) {
-                throw new Error(playlistsData.message || 'Failed to fetch playlists');
-            }
-            
-            setPlaylists(playlistsData.playlists || []);
+            setUsername(dashboardData.dashboardData.username);
+            setPlaylists(dashboardData.dashboardData.recentPlaylists || []);
         } catch (err) {
             console.error('Error fetching dashboard data:', err);
             setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
@@ -188,19 +179,23 @@ export default function Dashboard() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', width: '100%' }}>
                             {playlists.length > 0 ? (
                                 playlists.map((playlist) => (
-                                    <div key={playlist._id} className={styles.specificPlaylist}>
+                                    <div key={playlist.id} className={styles.specificPlaylist}>
                                         <p style={{ fontSize: '1.3rem' }}>{playlist.name}</p>
-                                        <button onClick={() => handleExpandPlaylist(playlist._id)} style={{
-                                            backgroundColor: '#FBFEF4',
-                                            color: '#254D32',
-                                            padding: '8px 20px',
-                                            borderRadius: '20px',
-                                            border: 'none',
-                                            fontSize: '0.9rem',
-                                            cursor: 'pointer'
-                                        }}>
+                                        <Link 
+                                            href={`/playlistExpanded/${playlist.id}`}
+                                            style={{
+                                                backgroundColor: '#FBFEF4',
+                                                color: '#254D32',
+                                                padding: '8px 20px',
+                                                borderRadius: '20px',
+                                                border: 'none',
+                                                fontSize: '0.9rem',
+                                                cursor: 'pointer',
+                                                textDecoration: 'none'
+                                            }}
+                                        >
                                             expand
-                                        </button>
+                                        </Link>
                                     </div>
                                 ))
                             ) : (

@@ -11,20 +11,38 @@ import { useState, useEffect } from "react";
 import moodGenreSongs from "./../songlist/moodGenreSongs.json";
 import { useSearchParams } from "next/navigation";
 
+interface Song {
+    id: number;
+    name: string;
+    artist: string;
+    link: string;
+}
 
+interface GenreMap {
+    pop: Song[];
+    rap: Song[];
+    rnb: Song[];
+    rock: Song[];
+    country: Song[];
+}
 
-
-
-
-
-
-
-
+interface MoodMap {
+    happy: GenreMap;
+    sad: GenreMap;
+    angry: GenreMap;
+    neutral: GenreMap;
+    fear: GenreMap;
+}
 
 export default function playlistResults() {
-
     const MAX_PLAYLISTS_PER_USER = 5;
     const [userId, setUserId] = useState("");
+    const [playlistName, setPlaylistName] = useState("");
+    const [likedSongs, setLikedSongs] = useState<Set<number>>(new Set());
+
+    const searchParams = useSearchParams();
+    const mood = searchParams.get("mood") || "happy";
+    const genre = searchParams.get("genre") || "pop";
 
     useEffect(() => {
         const storedData = sessionStorage.getItem('moodifyUser');
@@ -33,15 +51,6 @@ export default function playlistResults() {
             setUserId(userData.userId);
         }
     }, []);
-
-    
-    const [playlistName, setPlaylistName] = useState(""); // Additions by Omar
-
-    const searchParams = useSearchParams();
-    const mood = searchParams.get("mood") || "happy";
-    const genre = searchParams.get("genre") || "pop";
-
-    const [likedSongs, setLikedSongs] = useState<Set<number>>(new Set());
 
     const toggleLike = (id: number) => {
         setLikedSongs(prev => {
@@ -55,19 +64,11 @@ export default function playlistResults() {
         });
     };
 
-    // @ts-ignore //its fine (hopefully) typescript just dont like how its dynamic or some bs
-    const songs = moodGenreSongs[mood] && moodGenreSongs[mood][genre] || []; //additions from omar
+    // Get songs for the specific mood and genre
+    const songs: Song[] = (moodGenreSongs as MoodMap)[mood as keyof MoodMap]?.[genre as keyof GenreMap] || [];
 
-    type Song = {
-        id: number;
-        name: string;
-        artist: string;
-        link: string;
-      };
-      
-      
-    const savePlaylist = async () => { // @ts-ignore //its fine (hopefully) typescript just dont like how its dynamic or some bs
-        const selectedSongs = songs.filter(song => likedSongs.has(song.id));
+    const savePlaylist = async () => {
+        const selectedSongs = songs.filter((song: Song) => likedSongs.has(song.id));
       
         if (!playlistName || selectedSongs.length === 0) {
           alert("Please enter a playlist name and like at least one song.");
@@ -94,6 +95,7 @@ export default function playlistResults() {
               userId: userId,
               name: playlistName,
               mood: mood,
+              genre: genre,
               songs: selectedSongs
             })
           });
@@ -110,9 +112,7 @@ export default function playlistResults() {
           console.error("Error saving playlist:", err);
           alert("Something went wrong while saving.");
         }
-      };
-       //Additions by omar
-      
+    };
 
     return (
         <div className={styles.pageGreen}>
@@ -124,40 +124,39 @@ export default function playlistResults() {
                     <button className={styles.saveButton} onClick={savePlaylist}>Save</button> 
                     <div className={styles.inputSetMood}> 
                         <input
-                        className={styles.titleInput}
-                        type="text"
-                        placeholder="Name of Playlist"
-                        value={playlistName}
-                        onChange={(e) => setPlaylistName(e.target.value)} //Addition from omar
+                            className={styles.titleInput}
+                            type="text"
+                            placeholder="Name of Playlist"
+                            value={playlistName}
+                            onChange={(e) => setPlaylistName(e.target.value)}
                         />
-
                     </div>
                     <div className={styles.songList}> 
-                    {(songs as Song[]).map((song) => ( 
-                        <div key={song.id} className={styles.songItem}>
-                            <button
-                            onClick={() => toggleLike(song.id)}
-                            className={styles.heartButton}
-                            >
-                            {likedSongs.has(song.id) ? (
-                                <FaHeart color='red' size={20} />
-                            ) : (
-                                <FaRegHeart color='red' size={20} />
-                            )}
-                            </button>
-                            <div className={styles.songInfo}>
-                            <p className={styles.songName}>{song.name}</p>
-                            <p className={styles.artistName}>{song.artist}</p>
+                        {songs.map((song) => ( 
+                            <div key={song.id} className={styles.songItem}>
+                                <button
+                                    onClick={() => toggleLike(song.id)}
+                                    className={styles.heartButton}
+                                >
+                                    {likedSongs.has(song.id) ? (
+                                        <FaHeart color='red' size={20} />
+                                    ) : (
+                                        <FaRegHeart color='red' size={20} />
+                                    )}
+                                </button>
+                                <div className={styles.songInfo}>
+                                    <p className={styles.songName}>{song.name}</p>
+                                    <p className={styles.artistName}>{song.artist}</p>
+                                </div>
+                                <a
+                                    href={song.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={styles.linkButton}
+                                >
+                                    🔗
+                                </a>
                             </div>
-                            <a
-                            href={song.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={styles.linkButton}
-                            >
-                            🔗
-                            </a>
-                        </div>
                         ))}
                     </div>
                 </div>

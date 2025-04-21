@@ -4,14 +4,56 @@ import { NextResponse } from 'next/server';
 const uri = process.env.MONGODB_URI || "mongodb+srv://username:password@cluster.mongodb.net/dbname?retryWrites=true&w=majority";
 const dbName = process.env.MONGODB_DB || "userinfo";
 
+export async function GET(
+    req: Request,
+    { params }: { params: { id: Promise<string> | string } }
+) {
+    let client;
+    try {
+        const playlistId = await Promise.resolve(params.id);
+
+        client = new MongoClient(uri);
+        await client.connect();
+
+        const db = client.db(dbName);
+        const playlists = db.collection("playlists");
+
+        const playlist = await playlists.findOne({
+            _id: new ObjectId(playlistId)
+        });
+
+        if (!playlist) {
+            return NextResponse.json(
+                { error: "Playlist not found" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(
+            { playlist, success: true },
+            { status: 200 }
+        );
+    } catch (error) {
+        console.error("GET /api/playlist/[id] error:", error);
+        return NextResponse.json(
+            { error: "Failed to fetch playlist" },
+            { status: 500 }
+        );
+    } finally {
+        if (client) {
+            await client.close();
+        }
+    }
+}
+
 export async function PATCH(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: { id: Promise<string> | string } }
 ) {
     let client;
     try {
         const { name } = await req.json();
-        const playlistId = params.id;
+        const playlistId = await Promise.resolve(params.id);
 
         if (!name) {
             return NextResponse.json(
@@ -57,11 +99,11 @@ export async function PATCH(
 
 export async function DELETE(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: { id: Promise<string> | string } }
 ) {
     let client;
     try {
-        const playlistId = params.id;
+        const playlistId = await Promise.resolve(params.id);
 
         client = new MongoClient(uri);
         await client.connect();
