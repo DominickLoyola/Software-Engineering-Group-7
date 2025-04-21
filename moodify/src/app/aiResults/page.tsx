@@ -19,13 +19,14 @@ export default function aiResults() {
     const [userId, setUserId] = useState("");
 
     useEffect(() => {
-        // Get the user ID from localStorage
-        const storedUserId = localStorage.getItem('userId');
-        if (!storedUserId) {
+        // Get user data from sessionStorage
+        const storedData = sessionStorage.getItem('moodifyUser');
+        if (!storedData) {
             router.push('/login');
             return;
         }
-        setUserId(storedUserId);
+        const userData = JSON.parse(storedData);
+        setUserId(userData.userId);
 
         if (moodFromParam) {
             setMood(moodFromParam);

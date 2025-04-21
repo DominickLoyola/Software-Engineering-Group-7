@@ -27,8 +27,11 @@ export default function playlistResults() {
     const [userId, setUserId] = useState("");
 
     useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-    if (storedUserId) setUserId(storedUserId);
+        const storedData = sessionStorage.getItem('moodifyUser');
+        if (storedData) {
+            const userData = JSON.parse(storedData);
+            setUserId(userData.userId);
+        }
     }, []);
 
     

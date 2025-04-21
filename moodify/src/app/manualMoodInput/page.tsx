@@ -15,12 +15,15 @@ export default function manualMoodInput() {
     const [userId, setUserId] = useState("");
 
     useEffect(() => {
-        // This helps get userID from database after login
-        const storedUserId = localStorage.getItem('userId');
-        if (storedUserId) {
-            setUserId(storedUserId);
+        // Get user data from database (sessionStorage)
+        const storedData = sessionStorage.getItem('moodifyUser');
+        if (storedData) {
+            const userData = JSON.parse(storedData);
+            setUserId(userData.userId);
+        } else {
+            router.push('/login');
         }
-    }, []);
+    }, [router]);
 
     const handleDetectMood = async () => {
 

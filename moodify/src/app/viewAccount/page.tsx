@@ -19,9 +19,10 @@ import { HiOutlineUser } from 'react-icons/hi2';
 import NavbarWhite from '../../../components/navbarWhite';
 
 interface UserData {
+  _id: string;
   userId: string;
   username: string;
-  joinDate: string;
+  joinDate?: string;
   topMoods?: string[];
 }
 
@@ -46,6 +47,7 @@ export default function ViewAccount() {
     try {
       const parsedData = JSON.parse(storedData);
       setUserData({
+        _id: parsedData.userId,
         userId: parsedData.userId,
         username: parsedData.username,
         joinDate: parsedData.joinDate,
@@ -66,8 +68,11 @@ export default function ViewAccount() {
   };
 
   const handleSave = async () => {
-    if (!userData) return;
-    
+    if (!userData) {
+      setError('No user data available');
+      return;
+    }
+
     if (!editData.username.trim()) {
       setError('Username cannot be empty');
       return;
@@ -79,32 +84,41 @@ export default function ViewAccount() {
     try {
       const response = await fetch('/api/updateUser', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          userId: userData.userId,
+          userId: userData._id,
           username: editData.username,
-          password: editData.password || null
+          password: editData.password || undefined,
         }),
       });
 
-      const data = await response.json();
+      const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to update profile');
+        throw new Error(result.message || 'Failed to update profile');
       }
 
-      const updatedUser = {
+      // Update session storage with new username
+      const currentUserData = JSON.parse(sessionStorage.getItem('moodifyUser') || '{}');
+      sessionStorage.setItem('moodifyUser', JSON.stringify({
+        ...currentUserData,
+        username: editData.username
+      }));
+
+      setUserData({
         ...userData,
-        username: data.username
-      };
+        username: editData.username,
+      });
       
-      sessionStorage.setItem('moodifyUser', JSON.stringify(updatedUser));
-      setUserData(updatedUser);
       setIsEditing(false);
-      setError('✓ Changes saved');
-      setTimeout(() => setError(''), 3000);
+      setError('✓ Profile updated successfully');
+
+      // Redirect to dashboard to see the changes
+      router.push('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Update failed');
+      setError(err instanceof Error ? err.message : 'Failed to update profile');
     } finally {
       setIsLoading(false);
     }
@@ -182,11 +196,11 @@ export default function ViewAccount() {
               <div className={styles.inputSet}>
                 <label style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Member Since</label>
                 <div className={styles.accountInput}>
-                  {new Date(userData.joinDate).toLocaleDateString('en-US', {
+                  {userData.joinDate ? new Date(userData.joinDate).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
-                  })}
+                  }) : 'Not available'}
                 </div>
               </div>
             </div>

@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       userId: new ObjectId(userId),
       username: user.username,
       description: moodDescription,
-      mood: moodCategories[0], 
+      mood: moodCategories[0],
       categories: moodCategories,
       source: 'manual',
       timestamp: new Date()
@@ -86,10 +86,10 @@ export async function POST(request: Request) {
       { _id: new ObjectId(userId) },
       { 
         $set: { 
-          lastActivity: new Date(), 
+          lastActivity: new Date(),
           lastMoodId: result.insertedId,
           currentMood: moodDescription,
-          mood: moodCategories[0], // Set mood  
+          mood: moodCategories[0],
           moodCategories: moodCategories,
           moodTimestamp: new Date()
         } 
@@ -99,11 +99,12 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { 
         message: "Mood recorded successfully",
-        moodId: result.insertedId,
+        userId: userId,
         username: user.username,
-        mood: moodCategories[0], // Return mood
-        description: moodDescription, // Return mood description
+        description: moodDescription,
+        mood: moodCategories[0],
         moodCategories,
+        timestamp: new Date(),
         success: true 
       },
       { status: 201 }

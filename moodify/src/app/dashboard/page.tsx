@@ -14,47 +14,63 @@ export default function Dashboard() {
     const [username, setUsername] = useState("");
     const router = useRouter();
 
+    const fetchUserData = async () => {
+        // Get userId from database (sessionStorage)
+        const storedData = sessionStorage.getItem('moodifyUser');
+        if (!storedData) {
+            router.push('/login');
+            return;
+        }
+
+        try {
+            const userData = JSON.parse(storedData);
+            const userId = userData.userId;
+
+            // Fetch user data
+            const userResponse = await fetch(`/api/user/${userId}`);
+            const fetchedUserData = await userResponse.json();
+            
+            if (!userResponse.ok) {
+                throw new Error(fetchedUserData.message || 'Failed to fetch user data');
+            }
+            
+            setUsername(fetchedUserData.username);
+
+            // Fetch playlists
+            const playlistsResponse = await fetch(`/api/playlist?userId=${userId}`);
+            const playlistsData = await playlistsResponse.json();
+            
+            if (!playlistsResponse.ok) {
+                throw new Error(playlistsData.message || 'Failed to fetch playlists');
+            }
+            
+            setPlaylists(playlistsData.playlists || []);
+        } catch (err) {
+            console.error('Error fetching dashboard data:', err);
+            setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchUserData = async () => {
-            const userId = localStorage.getItem('userId');
-            if (!userId) {
-                router.push('/login');
-                return;
-            }
-
-            try {
-                // Fetch user data
-                const userResponse = await fetch(`/api/user/${userId}`);
-                const userData = await userResponse.json();
-                
-                if (!userResponse.ok) {
-                    throw new Error(userData.message || 'Failed to fetch user data');
-                }
-                
-                setUsername(userData.username);
-
-                // Fetch playlists
-                const playlistsResponse = await fetch(`/api/playlist?userId=${userId}`);
-                const playlistsData = await playlistsResponse.json();
-                
-                if (!playlistsResponse.ok) {
-                    throw new Error(playlistsData.message || 'Failed to fetch playlists');
-                }
-                
-                setPlaylists(playlistsData.playlists || []);
-            } catch (err) {
-                console.error('Error fetching dashboard data:', err);
-                setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchUserData();
     }, [router]);
 
+    // Add focus event listener to refresh data
+    useEffect(() => {
+        const handleFocus = () => {
+            fetchUserData();
+        };
+
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, []);
+
     const handleLogout = () => {
-        localStorage.removeItem('userId');
+        sessionStorage.removeItem('moodifyUser');
         router.push("/login");
     };
 

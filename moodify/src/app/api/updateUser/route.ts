@@ -1,4 +1,3 @@
-
 //code written by chris kennedy
 //use case: edit account
 //creates an edit account button that turns the username and password into text boxes
@@ -33,7 +32,26 @@ export async function POST(request: Request) {
     const db = client.db(dbName);
     const usersCollection = db.collection('users');
 
-    const updateData: { username: string, password?: string } = { username };
+    // First get the existing user data
+    const existingUser = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    if (!existingUser) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    // Prepare update data preserving mood-related fields
+    const updateData: any = {
+      username,
+      // Preserve existing mood-related fields
+      currentMood: existingUser.currentMood || null,
+      lastActivity: existingUser.lastActivity || null,
+      lastMoodId: existingUser.lastMoodId || null,
+      moodCategories: existingUser.moodCategories || [],
+      mood: existingUser.mood || null,
+      moodTimestamp: existingUser.moodTimestamp || null
+    };
 
     if (password !== undefined && password !== null) {
       updateData.password = password;
@@ -47,7 +65,10 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       username,
-      message: "Profile updated successfully"
+      message: "Profile updated successfully",
+      currentMood: updateData.currentMood,
+      lastActivity: updateData.lastActivity,
+      mood: updateData.mood
     });
 
   } catch (error) {

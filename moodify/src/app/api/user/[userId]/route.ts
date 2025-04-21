@@ -8,18 +8,33 @@ import { NextResponse } from 'next/server';
 const uri = process.env.MONGODB_URI || "mongodb+srv://username:password@cluster.mongodb.net/dbname?retryWrites=true&w=majority";
 const dbName = process.env.MONGODB_DB || "userinfo";
 
+type Props = {
+  params: Promise<{ userId: string }> | { userId: string };
+};
+
 export async function GET(
   request: Request,
-  { params }: { params: { userId: string } }
+  context: Props
 ) {
   let client;
   
   try {
+    // Ensure params is properly awaited
+    const params = await context.params;
     const userId = params.userId;
-    
-    if (!userId) {
+
+    // Validate the userId
+    if (!userId || typeof userId !== 'string') {
       return NextResponse.json(
         { message: "User ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Validate ObjectId format
+    if (!ObjectId.isValid(userId)) {
+      return NextResponse.json(
+        { message: "Invalid user ID format" },
         { status: 400 }
       );
     }
