@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../page.module.css";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../../../components/navbar";
 import { CiVideoOn } from "react-icons/ci";
@@ -14,46 +14,22 @@ export default function UploadMedia() {
     const router = useRouter();
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [isServerAvailable, setIsServerAvailable] = useState<boolean | null>(null);
+    const [analysisResult, setAnalysisResult] = useState<any>(null);
 
     const imageInputRef = useRef<HTMLInputElement>(null);
     const videoInputRef = useRef<HTMLInputElement>(null);
 
-    // API base URL - change this to match your Flask server address
-    const API_BASE_URL = 'http://localhost:5000/api';
-
-    // Check if the server is available when component mounts
-    useEffect(() => {
-        const checkServerAvailability = async () => {
-            try {
-                const response = await fetch(API_BASE_URL, {
-                    method: 'GET',
-                    mode: 'cors',
-                });
-                setIsServerAvailable(true);
-                console.log("API server is available");
-            } catch (err) {
-                setIsServerAvailable(false);
-                console.error("API server not available:", err);
-            }
-        };
-
-        checkServerAvailability();
-    }, [API_BASE_URL]);
-
     const handleOptionSelect = (option: string) => {
         setSelectedOption(option);
-        setError(null);
-
         if (option === 'image' && imageInputRef.current) {
             imageInputRef.current.click();
         } else if (option === 'video' && videoInputRef.current) {
             videoInputRef.current.click();
         } else if (option === 'camera') {
-            // We'll handle webcam in a different way
-            handleWebcamCapture();
+            // This would be handled differently - potentially start a webcam session
+            alert("Camera functionality requires direct access to webcam API. This would redirect to the backend's webcam endpoint.");
         }
     };
 
@@ -62,56 +38,15 @@ export default function UploadMedia() {
         if (selectedFile) {
             setFile(selectedFile);
             console.log("Selected File:", selectedFile.name);
-        }
-    };
-
-    const handleWebcamCapture = async () => {
-        if (!isServerAvailable) {
-            setError("Cannot connect to API server. Please ensure the server is running.");
-            return;
-        }
-
-        setIsLoading(true);
-        try {
-            // Direct call to webcam API endpoint
-            const response = await fetch(`${API_BASE_URL}/analyze/webcam`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                mode: 'cors',
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Webcam processing failed: ${response.status} - ${errorText}`);
-            }
-
-            const data = await response.json();
-            console.log("Webcam analysis result:", data);
-
-            // Navigate to results page with the result ID
-            if (data.result_id) {
-                router.push(`/aiResults?resultId=${data.result_id}`);
-            } else {
-                setError("No result ID returned from the server");
-            }
-        } catch (err) {
-            console.error("Webcam capture error:", err);
-            setError(err instanceof Error ? err.message : "An error occurred with webcam processing");
-        } finally {
-            setIsLoading(false);
+            // Reset previous results
+            setAnalysisResult(null);
+            setError(null);
         }
     };
 
     const handleUpload = async () => {
-        if (!isServerAvailable) {
-            setError("Cannot connect to API server. Please ensure the server is running.");
-            return;
-        }
-
         if (!selectedOption || !file) {
-            setError("Please select a file to upload");
+            setError("Please select a file and option first");
             return;
         }
 
@@ -119,45 +54,77 @@ export default function UploadMedia() {
         setError(null);
 
         try {
-            // Create form data for file upload
+            // Create form data to send the file
             const formData = new FormData();
-            formData.append(selectedOption, file);
 
-            // Determine which endpoint to use based on selected option
+            // Set the correct field name based on the type
+            if (selectedOption === 'image') {
+                formData.append('image', file);
+            } else if (selectedOption === 'video') {
+                formData.append('video', file);
+            }
+
+            console.log(formData);
+
+            // Determine the endpoint based on selectedOption
             const endpoint = selectedOption === 'image'
-                ? `${API_BASE_URL}/analyze/image`
-                : `${API_BASE_URL}/analyze/video`;
+                ? 'http://localhost:3001/api/analyze/image'
+                : 'http://localhost:3001/api/analyze/video';
 
-            console.log(`Making request to: ${endpoint}`);
+            console.log(`Uploading ${selectedOption} to ${endpoint}`);
 
-            // Make API request
+            // Make the API call
             const response = await fetch(endpoint, {
                 method: 'POST',
                 body: formData,
-                mode: 'cors',
-                // No Content-Type header needed, browser sets it with boundary for FormData
             });
 
             if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Upload failed with status: ${response.status} - ${errorText}`);
+                throw new Error(`API Error: ${response.status}`);
             }
 
             const data = await response.json();
-            console.log(`${selectedOption.toUpperCase()} analysis result:`, data);
+            console.log("API Response:", data);
 
-            // Navigate to results page with the result ID
-            if (data.result_id) {
-                router.push(`/aiResults?resultId=${data.result_id}`);
+            if (data.status === 'success') {
+                setAnalysisResult(data);
+
+                // Store result in localStorage to share with results page
+                localStorage.setItem('emotionAnalysisResult', JSON.stringify(data));
+
+                // Navigate to results page
+                router.push("/aiResults");
             } else {
-                setError("No result ID returned from the server");
+                setError(data.error || "Unknown error occurred");
             }
         } catch (err) {
-            console.error("Upload error:", err);
-            setError(err instanceof Error ? err.message : "An error occurred during upload");
+            console.error("Upload failed:", err);
+            setError(err instanceof Error ? err.message : "Failed to upload and analyze file");
         } finally {
             setIsLoading(false);
         }
+    };
+
+    // Render loading state, error, or results if available
+    const renderStatus = () => {
+        if (isLoading) {
+            return <div className={styles.loadingIndicator}>Analyzing your {selectedOption}... Please wait</div>;
+        }
+
+        if (error) {
+            return <div className={styles.errorMessage}>{error}</div>;
+        }
+
+        if (analysisResult) {
+            return (
+                <div className={styles.resultPreview}>
+                    <h3>Analysis Complete!</h3>
+                    <p>{analysisResult.summary}</p>
+                </div>
+            );
+        }
+
+        return null;
     };
 
     return (
@@ -186,32 +153,6 @@ export default function UploadMedia() {
                     </h1>
                     <p className={styles.description}>Upload or take a picture of how you are feeling</p>
 
-                    {/* API Server Status */}
-                    {isServerAvailable === false && (
-                        <div style={{
-                            padding: '10px',
-                            backgroundColor: '#ffdddd',
-                            color: '#d8000c',
-                            borderRadius: '5px',
-                            marginBottom: '20px'
-                        }}>
-                            ⚠️ Cannot connect to API server. Please make sure the emotion detection server is running.
-                        </div>
-                    )}
-
-                    {/* Error message display */}
-                    {error && (
-                        <div style={{
-                            padding: '10px',
-                            backgroundColor: '#ffdddd',
-                            color: '#d8000c',
-                            borderRadius: '5px',
-                            marginBottom: '20px'
-                        }}>
-                            {error}
-                        </div>
-                    )}
-
                     {/* Upload Options */}
                     <div style={{
                         display: 'flex',
@@ -235,8 +176,7 @@ export default function UploadMedia() {
                                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
                                 border: selectedOption === 'video' ? '3px solid #254D32' : 'none'
                             }}>
-                                <CiVideoOn color='#181D27' size={150}>
-                                </CiVideoOn>
+                                <CiVideoOn color='#181D27' size={150} />
                             </div>
                             <h2 style={{ fontSize: '1.5rem', color: '#254D32', fontFamily: "'Actor', sans-serif" }}>Video Upload</h2>
                         </div>
@@ -255,10 +195,11 @@ export default function UploadMedia() {
                                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
                                 border: selectedOption === 'image' ? '3px solid #254D32' : 'none'
                             }}>
-                                <CiImageOn color='#181D27' size={150}></CiImageOn>
+                                <CiImageOn color='#181D27' size={150} />
                             </div>
                             <h2 style={{ fontSize: '1.5rem', color: '#254D32', fontFamily: "'Actor', sans-serif" }}>Image Upload</h2>
                         </div>
+
                         {/* Camera */}
                         <div onClick={() => handleOptionSelect('camera')} style={{ cursor: 'pointer', textAlign: 'center' }}>
                             <div style={{
@@ -273,11 +214,21 @@ export default function UploadMedia() {
                                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
                                 border: selectedOption === 'camera' ? '3px solid #254D32' : 'none'
                             }}>
-                                <CiCamera color='#181D27' size={150}></CiCamera>
+                                <CiCamera color='#181D27' size={150} />
                             </div>
                             <h2 style={{ fontSize: '1.5rem', color: '#254D32', fontFamily: "'Actor', sans-serif" }}>Camera</h2>
                         </div>
                     </div>
+
+                    {/* File Selected Indicator */}
+                    {file && (
+                        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                            <p>Selected file: <strong>{file.name}</strong></p>
+                        </div>
+                    )}
+
+                    {/* Status display (loading/error/results) */}
+                    {renderStatus()}
 
                     <div style={{
                         display: 'flex',
@@ -288,25 +239,11 @@ export default function UploadMedia() {
                         <button
                             onClick={handleUpload}
                             className={styles.greenButton}
-                            disabled={isLoading || selectedOption === 'camera' || !file || isServerAvailable === false}
+                            disabled={isLoading || !file}
                         >
                             {isLoading ? 'Processing...' : 'Upload'}
                         </button>
                     </div>
-
-                    {/* Display selected file name */}
-                    {file && (
-                        <p style={{ textAlign: 'center', marginTop: '20px', color: '#254D32' }}>
-                            Selected: {file.name}
-                        </p>
-                    )}
-
-                    {/* Display info when camera option selected */}
-                    {selectedOption === 'camera' && (
-                        <p style={{ textAlign: 'center', marginTop: '20px', color: '#254D32' }}>
-                            {isLoading ? 'Opening webcam...' : 'Webcam will open in a new window'}
-                        </p>
-                    )}
                 </div>
             </main>
         </div>
