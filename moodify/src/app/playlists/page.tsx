@@ -1,80 +1,143 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../../../components/navbar";
 import { FaEdit, FaTrash, FaChevronDown, FaChevronUp, FaSave } from "react-icons/fa";
 import styles from "../page.module.css";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+interface Song {
+    name: string;
+    artist: string;
+    link?: string;
+}
+
+interface Playlist {
+    _id: string;
+    name: string;
+    songs: Song[];
+    userId: string;
+    createdAt: string;
+}
 
 export default function PlaylistsPage() {
-    const [playlists, setPlaylists] = useState([
-        {
-            id: 1,
-            title: "Rainy Day Blues",
-            songs: [
-                "Someone Like You - Adele",
-                "Skinny Love - Bon Iver",
-                "The Night We Met - Lord Huron",
-                "Breathe Me - Sia",
-                "Slow Dancing in the Dark - Joji",
-                "Liability - Lorde",
-                "Roslyn - Bon Iver & St. Vincent"
-            ]
-        },
-        {
-            id: 2,
-            title: "Morning Vibes",
-            songs: [
-                "Banana Pancakes - Jack Johnson",
-                "Sunday Morning - Maroon 5",
-                "Good Morning - Kanye West",
-                "Pocketful of Sunshine - Natasha Bedingfield",
-                "Put Your Records On - Corinne Bailey Rae",
-                "Sunflower - Post Malone & Swae Lee",
-                "Budapest - George Ezra"
-            ]
-        },
-        {
-            id: 3,
-            title: "Feel Good Songs",
-            songs: [
-                "Good as Hell - Lizzo",
-                "Can’t Stop the Feeling! - Justin Timberlake",
-                "Walking on Sunshine - Katrina & The Waves",
-                "Happy - Pharrell Williams",
-                "Good Day - Nappy Roots",
-                "Electric Love - BØRNS",
-                "Uptown Funk - Mark Ronson ft. Bruno Mars"
-            ]
-        },
-
-    ]);
-
-    const [editingId, setEditingId] = useState<number | null>(null);
-    const [expandedId, setExpandedId] = useState<number | null>(null);
+    const [playlists, setPlaylists] = useState<Playlist[]>([]);
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [expandedId, setExpandedId] = useState<string | null>(null);
     const [titleInput, setTitleInput] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const router = useRouter();
 
-    const handleEdit = (id: number, currentTitle: string) => {
+    useEffect(() => {
+        const fetchPlaylists = async () => {
+            const storedData = sessionStorage.getItem('moodifyUser');
+            if (!storedData) {
+                router.push('/login');
+                return;
+            }
+
+            try {
+                const userData = JSON.parse(storedData);
+                const userId = userData.userId;
+
+                const response = await fetch(`/api/playlist?userId=${userId}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to fetch playlists');
+                }
+
+                setPlaylists(data.playlists || []);
+            } catch (err) {
+                console.error('Error fetching playlists:', err);
+                setError(err instanceof Error ? err.message : 'Failed to load playlists');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPlaylists();
+    }, [router]);
+
+    const handleEdit = async (id: string, currentTitle: string) => {
         setEditingId(id);
         setTitleInput(currentTitle);
     };
 
-    const handleSave = (id: number) => {
-        setPlaylists((prev) =>
-            prev.map((playlist) =>
-                playlist.id === id ? { ...playlist, title: titleInput } : playlist
-            )
+    const handleSave = async (id: string) => {
+        try {
+            const response = await fetch(`/api/playlist/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: titleInput }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update playlist name');
+            }
+
+            setPlaylists(prev =>
+                prev.map(playlist =>
+                    playlist._id === id ? { ...playlist, name: titleInput } : playlist
+                )
+            );
+            setEditingId(null);
+        } catch (error) {
+            console.error('Error updating playlist:', error);
+            alert('Failed to update playlist name');
+        }
+    };
+
+    const handleDelete = async (id: string) => {
+        try {
+            const response = await fetch(`/api/playlist/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete playlist');
+            }
+
+            setPlaylists(prev => prev.filter(playlist => playlist._id !== id));
+        } catch (error) {
+            console.error('Error deleting playlist:', error);
+            alert('Failed to delete playlist');
+        }
+    };
+
+    const toggleExpand = (id: string) => {
+        setExpandedId(prev => (prev === id ? null : id));
+    };
+
+    if (loading) {
+        return (
+            <div className={styles.pageGreen}>
+                <Navbar activePage="playlists" />
+                <main className={styles.main}>
+                    <div className={styles.whiteContainer}>
+                        <h1 className={styles.title}>Loading...</h1>
+                    </div>
+                </main>
+            </div>
         );
-        setEditingId(null);
-    };
+    }
 
-    const handleDelete = (id: number) => {
-        setPlaylists((prev) => prev.filter((playlist) => playlist.id !== id));
-    };
-
-    const toggleExpand = (id: number) => {
-        setExpandedId((prev) => (prev === id ? null : id));
-    };
+    if (error) {
+        return (
+            <div className={styles.pageGreen}>
+                <Navbar activePage="playlists" />
+                <main className={styles.main}>
+                    <div className={styles.whiteContainer}>
+                        <h1 className={styles.title}>Error: {error}</h1>
+                    </div>
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.pageGreen}>
@@ -84,49 +147,53 @@ export default function PlaylistsPage() {
                     <Link href="/dashboard" className={styles.exit}>×</Link>
                     <h1 className={styles.title}>My Playlists</h1>
                     <div className={styles.playlistContainerNew}>
-                        {playlists.map((playlist) => (
-                            <div key={playlist.id} className={styles.playlistCardNew}>
-                                <div className={styles.playlistHeaderNew}>
-                                    {editingId === playlist.id ? (
-                                        <input
-                                            value={titleInput}
-                                            onChange={(e) => setTitleInput(e.target.value)}
-                                            className={styles.playlistTitleInput}
-                                        />
-                                    ) : (
-                                        <h2 className={styles.playlistTitle}>{playlist.title}</h2>
-                                    )}
-
-                                    <div className={styles.iconGroupNew}>
-                                        {editingId === playlist.id ? (
-                                            <button onClick={() => handleSave(playlist.id)} title="Save" className={styles.iconButtonNew}>
-                                                <FaSave size={16} />
-                                            </button>
+                        {playlists.length > 0 ? (
+                            playlists.map((playlist) => (
+                                <div key={playlist._id} className={styles.playlistCardNew}>
+                                    <div className={styles.playlistHeaderNew}>
+                                        {editingId === playlist._id ? (
+                                            <input
+                                                value={titleInput}
+                                                onChange={(e) => setTitleInput(e.target.value)}
+                                                className={styles.playlistTitleInput}
+                                            />
                                         ) : (
-                                            <button onClick={() => handleEdit(playlist.id, playlist.title)} title="Edit" className={styles.iconButtonNew}>
-                                                <FaEdit size={16} />
-                                            </button>
+                                            <h2 className={styles.playlistTitle}>{playlist.name}</h2>
                                         )}
-
-                                        <button onClick={() => toggleExpand(playlist.id)} title="Expand/Collapse" className={styles.iconButtonNew}>
-                                            {expandedId === playlist.id ? <FaChevronUp size={16} /> : <FaChevronDown size={16} />}
-                                        </button>
-
-                                        <button onClick={() => handleDelete(playlist.id)} title="Delete" className={styles.iconButtonNew}>
-                                            <FaTrash size={16} />
-                                        </button>
+                                        <div>
+                                            {editingId === playlist._id ? (
+                                                <button onClick={() => handleSave(playlist._id)} title="Save" className={styles.iconButtonNew}>
+                                                    <FaSave size={16} />
+                                                </button>
+                                            ) : (
+                                                <button onClick={() => handleEdit(playlist._id, playlist.name)} title="Edit" className={styles.iconButtonNew}>
+                                                    <FaEdit size={16} />
+                                                </button>
+                                            )}
+                                            <button onClick={() => toggleExpand(playlist._id)} title="Expand/Collapse" className={styles.iconButtonNew}>
+                                                {expandedId === playlist._id ? <FaChevronUp size={16} /> : <FaChevronDown size={16} />}
+                                            </button>
+                                            <button onClick={() => handleDelete(playlist._id)} title="Delete" className={styles.iconButtonNew}>
+                                                <FaTrash size={16} />
+                                            </button>
+                                        </div>
                                     </div>
+                                    {expandedId === playlist._id && (
+                                        <ul className={styles.songListNew}>
+                                            {playlist.songs.map((song, i) => (
+                                                <li key={i} className={styles.songItemNew}>
+                                                    {song.name} - {song.artist}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
-
-                                {expandedId === playlist.id && (
-                                    <ul className={styles.songListNew}>
-                                        {playlist.songs.map((song, i) => (
-                                            <li key={i} className={styles.songItemNew}>{song}</li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <p style={{ textAlign: 'center', fontSize: '1.1rem', color: '#254D32' }}>
+                                No playlists yet. Create one by detecting your mood or manually inputting it!
+                            </p>
+                        )}
                     </div>
                 </div>
             </main>
