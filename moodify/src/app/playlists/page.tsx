@@ -24,7 +24,7 @@ interface Playlist {
 export default function PlaylistsPage() {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [editingId, setEditingId] = useState<string | null>(null);
-    const [expandedId, setExpandedId] = useState<string | null>(null);
+    const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
     const [titleInput, setTitleInput] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -110,7 +110,15 @@ export default function PlaylistsPage() {
     };
 
     const toggleExpand = (id: string) => {
-        setExpandedId(prev => (prev === id ? null : id));
+        setExpandedIds(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(id)) {
+                newSet.delete(id);
+            } else {
+                newSet.add(id);
+            }
+            return newSet;
+        });
     };
 
     if (loading) {
@@ -171,14 +179,14 @@ export default function PlaylistsPage() {
                                                 </button>
                                             )}
                                             <button onClick={() => toggleExpand(playlist._id)} title="Expand/Collapse" className={styles.iconButtonNew}>
-                                                {expandedId === playlist._id ? <FaChevronUp size={16} /> : <FaChevronDown size={16} />}
+                                                {expandedIds.has(playlist._id) ? <FaChevronUp size={16} /> : <FaChevronDown size={16} />}
                                             </button>
                                             <button onClick={() => handleDelete(playlist._id)} title="Delete" className={styles.iconButtonNew}>
                                                 <FaTrash size={16} />
                                             </button>
                                         </div>
                                     </div>
-                                    {expandedId === playlist._id && (
+                                    {expandedIds.has(playlist._id) && (
                                         <ul className={styles.songListNew}>
                                             {playlist.songs.map((song, i) => (
                                                 <li key={i} className={styles.songItemNew}>

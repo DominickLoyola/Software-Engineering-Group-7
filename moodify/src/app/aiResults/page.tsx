@@ -60,8 +60,8 @@ export default function aiResults() {
                 }
             }
 
-            // Navigate to playlist results
-            router.push("/playlistResults");
+            // Navigate to playlist results with both mood and genre
+            router.push(`/playlistResults?mood=${mood}&genre=${genre}`);
         } catch (error) {
             console.error("Error:", error);
         } finally {
@@ -79,11 +79,12 @@ export default function aiResults() {
                     <p className={styles.description}>Edit your mood if needed and select a genre for your playlist</p>
                     <div className={styles.inputSetMood}>
                         <h2>Detected Mood</h2>
-                        <select className={styles.selectBox}
+                        <select 
+                            className={styles.selectBox}
                             value={mood}
                             onChange={(e) => setMood(e.target.value)}
                         >
-                            <option value="neutral">Nuetral</option>
+                            <option value="neutral">Neutral</option>
                             <option value="fear">Fear</option>
                             <option value="sad">Sad</option>
                             <option value="happy">Happy</option>
@@ -96,11 +97,17 @@ export default function aiResults() {
                             <option value="">Select a genre</option>
                             <option value="pop">Pop</option>
                             <option value="rock">Rock</option>
-                            <option value="hiphop">Rap</option>
+                            <option value="rap">Rap</option>
                             <option value="rnb">R&B</option>
                         </select>
                     </div>
-                    <Link href="/playlistResults" className={styles.greenButton}>Generate Playlist</Link>
+                    <Link 
+                        href={`/playlistResults?mood=${mood}&genre=${genre}`} 
+                        className={styles.greenButton}
+                        onClick={handleGeneratePlaylist}
+                    >
+                        Generate Playlist
+                    </Link>
                 </div>
             </main>
         </div>
