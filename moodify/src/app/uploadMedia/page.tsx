@@ -3,13 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../page.module.css";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../../../components/navbar";
 import { CiVideoOn } from "react-icons/ci";
 import { CiImageOn } from "react-icons/ci";
 import { CiCamera } from "react-icons/ci";
-
 
 export default function UploadMedia() {
     const router = useRouter();
@@ -17,12 +16,32 @@ export default function UploadMedia() {
     const [file, setFile] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isServerAvailable, setIsServerAvailable] = useState<boolean | null>(null);
 
     const imageInputRef = useRef<HTMLInputElement>(null);
     const videoInputRef = useRef<HTMLInputElement>(null);
 
-
+    // API base URL - change this to match your Flask server address
     const API_BASE_URL = 'http://localhost:5000/api';
+
+    // Check if the server is available when component mounts
+    useEffect(() => {
+        const checkServerAvailability = async () => {
+            try {
+                const response = await fetch(API_BASE_URL, {
+                    method: 'GET',
+                    mode: 'cors',
+                });
+                setIsServerAvailable(true);
+                console.log("API server is available");
+            } catch (err) {
+                setIsServerAvailable(false);
+                console.error("API server not available:", err);
+            }
+        };
+
+        checkServerAvailability();
+    }, [API_BASE_URL]);
 
     const handleOptionSelect = (option: string) => {
         setSelectedOption(option);
@@ -47,6 +66,11 @@ export default function UploadMedia() {
     };
 
     const handleWebcamCapture = async () => {
+        if (!isServerAvailable) {
+            setError("Cannot connect to API server. Please ensure the server is running.");
+            return;
+        }
+
         setIsLoading(true);
         try {
             // Direct call to webcam API endpoint
@@ -54,11 +78,13 @@ export default function UploadMedia() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                mode: 'cors',
             });
 
             if (!response.ok) {
-                throw new Error('Failed to process webcam feed');
+                const errorText = await response.text();
+                throw new Error(`Webcam processing failed: ${response.status} - ${errorText}`);
             }
 
             const data = await response.json();
@@ -79,6 +105,11 @@ export default function UploadMedia() {
     };
 
     const handleUpload = async () => {
+        if (!isServerAvailable) {
+            setError("Cannot connect to API server. Please ensure the server is running.");
+            return;
+        }
+
         if (!selectedOption || !file) {
             setError("Please select a file to upload");
             return;
@@ -97,15 +128,19 @@ export default function UploadMedia() {
                 ? `${API_BASE_URL}/analyze/image`
                 : `${API_BASE_URL}/analyze/video`;
 
+            console.log(`Making request to: ${endpoint}`);
+
             // Make API request
             const response = await fetch(endpoint, {
                 method: 'POST',
                 body: formData,
+                mode: 'cors',
                 // No Content-Type header needed, browser sets it with boundary for FormData
             });
 
             if (!response.ok) {
-                throw new Error(`Upload failed with status: ${response.status}`);
+                const errorText = await response.text();
+                throw new Error(`Upload failed with status: ${response.status} - ${errorText}`);
             }
 
             const data = await response.json();
@@ -150,6 +185,33 @@ export default function UploadMedia() {
                         Upload Media
                     </h1>
                     <p className={styles.description}>Upload or take a picture of how you are feeling</p>
+
+                    {/* API Server Status */}
+                    {isServerAvailable === false && (
+                        <div style={{
+                            padding: '10px',
+                            backgroundColor: '#ffdddd',
+                            color: '#d8000c',
+                            borderRadius: '5px',
+                            marginBottom: '20px'
+                        }}>
+                            ⚠️ Cannot connect to API server. Please make sure the emotion detection server is running.
+                        </div>
+                    )}
+
+                    {/* Error message display */}
+                    {error && (
+                        <div style={{
+                            padding: '10px',
+                            backgroundColor: '#ffdddd',
+                            color: '#d8000c',
+                            borderRadius: '5px',
+                            marginBottom: '20px'
+                        }}>
+                            {error}
+                        </div>
+                    )}
+
                     {/* Upload Options */}
                     <div style={{
                         display: 'flex',
@@ -223,10 +285,28 @@ export default function UploadMedia() {
                         gap: '50px',
                         width: '100%',
                     }}>
-                        <button onClick={handleUpload} className={styles.greenButton}>
-                            Upload
+                        <button
+                            onClick={handleUpload}
+                            className={styles.greenButton}
+                            disabled={isLoading || selectedOption === 'camera' || !file || isServerAvailable === false}
+                        >
+                            {isLoading ? 'Processing...' : 'Upload'}
                         </button>
                     </div>
+
+                    {/* Display selected file name */}
+                    {file && (
+                        <p style={{ textAlign: 'center', marginTop: '20px', color: '#254D32' }}>
+                            Selected: {file.name}
+                        </p>
+                    )}
+
+                    {/* Display info when camera option selected */}
+                    {selectedOption === 'camera' && (
+                        <p style={{ textAlign: 'center', marginTop: '20px', color: '#254D32' }}>
+                            {isLoading ? 'Opening webcam...' : 'Webcam will open in a new window'}
+                        </p>
+                    )}
                 </div>
             </main>
         </div>
