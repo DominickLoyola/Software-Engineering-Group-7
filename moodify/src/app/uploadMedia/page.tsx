@@ -15,19 +15,26 @@ export default function UploadMedia() {
     const router = useRouter();
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const imageInputRef = useRef<HTMLInputElement>(null);
     const videoInputRef = useRef<HTMLInputElement>(null);
 
 
+    const API_BASE_URL = 'http://localhost:5000/api';
+
     const handleOptionSelect = (option: string) => {
         setSelectedOption(option);
+        setError(null);
+
         if (option === 'image' && imageInputRef.current) {
             imageInputRef.current.click();
         } else if (option === 'video' && videoInputRef.current) {
             videoInputRef.current.click();
         } else if (option === 'camera') {
-            // handle camera selection later
+            // We'll handle webcam in a different way
+            handleWebcamCapture();
         }
     };
 
@@ -39,14 +46,83 @@ export default function UploadMedia() {
         }
     };
 
-    const handleUpload = () => {
+    const handleWebcamCapture = async () => {
+        setIsLoading(true);
+        try {
+            // Direct call to webcam API endpoint
+            const response = await fetch(`${API_BASE_URL}/analyze/webcam`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to process webcam feed');
+            }
+
+            const data = await response.json();
+            console.log("Webcam analysis result:", data);
+
+            // Navigate to results page with the result ID
+            if (data.result_id) {
+                router.push(`/aiResults?resultId=${data.result_id}`);
+            } else {
+                setError("No result ID returned from the server");
+            }
+        } catch (err) {
+            console.error("Webcam capture error:", err);
+            setError(err instanceof Error ? err.message : "An error occurred with webcam processing");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleUpload = async () => {
         if (!selectedOption || !file) {
-            console.log("No option or file selected");
+            setError("Please select a file to upload");
             return;
         }
 
-        console.log(`Uploading ${selectedOption}:`, file.name);
-        router.push("/aiResults");
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            // Create form data for file upload
+            const formData = new FormData();
+            formData.append(selectedOption, file);
+
+            // Determine which endpoint to use based on selected option
+            const endpoint = selectedOption === 'image'
+                ? `${API_BASE_URL}/analyze/image`
+                : `${API_BASE_URL}/analyze/video`;
+
+            // Make API request
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                body: formData,
+                // No Content-Type header needed, browser sets it with boundary for FormData
+            });
+
+            if (!response.ok) {
+                throw new Error(`Upload failed with status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log(`${selectedOption.toUpperCase()} analysis result:`, data);
+
+            // Navigate to results page with the result ID
+            if (data.result_id) {
+                router.push(`/aiResults?resultId=${data.result_id}`);
+            } else {
+                setError("No result ID returned from the server");
+            }
+        } catch (err) {
+            console.error("Upload error:", err);
+            setError(err instanceof Error ? err.message : "An error occurred during upload");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
