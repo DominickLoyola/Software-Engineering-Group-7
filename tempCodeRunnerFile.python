@@ -1,121 +1,85 @@
-import torch
-import cv2
-import numpy as np
-from PIL import Image
-from facenet_pytorch import MTCNN, InceptionResnetV1
-from deepface import DeepFace
+import requests
+import os
+import json
 
-class FacialDetector:
-    def __init__(self, device=None):
-        if device is None:
-            self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+# Base URL for local testing
+BASE_URL = "http://localhost:5000"
+
+def test_image_analysis():
+    """Test image analysis endpoint"""
+    # Path to a test image
+    test_image = "path/to/test_image.jpg"
+    
+    if not os.path.exists(test_image):
+        print(f"Test image not found: {test_image}")
+        return False
+    
+    # Send request to analyze image
+    with open(test_image, 'rb') as f:
+        files = {'image': f}
+        response = requests.post(f"{BASE_URL}/api/analyze/image", files=files)
+    
+    # Check response
+    if response.status_code == 200:
+        result = response.json()
+        print("✅ Image analysis successful!")
+        print(f"Result ID: {result.get('result_id')}")
+        print(f"Summary: {result.get('summary')}")
+        
+        # Verify result was saved to disk
+        result_id = result.get('result_id')
+        verification_response = requests.get(f"{BASE_URL}/api/results/{result_id}")
+        
+        if verification_response.status_code == 200:
+            print("✅ Result saved to API successfully!")
+            return True
         else:
-            self.device = device
-
-        print(f"Using device: {self.device}")
-        
-        self.mtcnn = MTCNN(
-            image_size=160, 
-            margin=0, 
-            min_face_size=20,
-            thresholds=[0.6, 0.7, 0.7], 
-            factor=0.709, 
-            post_process=True,
-            device=self.device
-        )
-        
-        self.facenet = InceptionResnetV1(pretrained='vggface2').eval().to(self.device)
-
-    def process_pil_image(self, img):
-        """ Process a PIL image to detect faces and recognize emotions """
-        if isinstance(img, np.ndarray):
-            img = Image.fromarray(img)
-
-        boxes, _ = self.mtcnn.detect(img)
-        emotions = self.analyze_emotions(img)
-        return boxes, emotions
-
-    def analyze_emotions(self, img):
-        """ Analyze emotions using DeepFace """
-        try:
-            analysis = DeepFace.analyze(img_path=img, actions=['emotion'], enforce_detection=False)
-            return analysis["emotion"]
-        except Exception as e:
-            print("Emotion analysis failed:", str(e))
-            return {}
-
-    def process_video(self, video_path):
-        """ Process a video file frame-by-frame """
-        cap = cv2.VideoCapture(video_path)
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
-
-            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            img = Image.fromarray(frame_rgb)
-
-            boxes, emotions = self.process_pil_image(img)
-            frame = self.draw_boxes(frame, boxes)
-
-            cv2.imshow("Video Feed", frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-        cap.release()
-        cv2.destroyAllWindows()
-
-    def process_webcam(self):
-        """ Process webcam feed in real-time """
-        cap = cv2.VideoCapture(0)
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                break
-
-            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            img = Image.fromarray(frame_rgb)
-
-            boxes, emotions = self.process_pil_image(img)
-            frame = self.draw_boxes(frame, boxes)
-
-            cv2.imshow("Webcam Feed", frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-
-        cap.release()
-        cv2.destroyAllWindows()
-
-    def draw_boxes(self, frame, boxes):
-        """ Draw rectangles around detected faces """
-        if boxes is not None:
-            for box in boxes:
-                x1, y1, x2, y2 = [int(coord) for coord in box]
-                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-        return frame
-
-# ===============================
-#          MAIN PROGRAM
-# ===============================
-if __name__ == "__main__":
-    detector = FacialDetector()
-
-    action = input("Select action: 1 for image, 2 for video, 3 for webcam\n")
-
-    if action == '1':
-        img_path = input("Enter the path to the image file: ")
-        img = Image.open(img_path)
-        boxes, emotions = detector.process_pil_image(img)
-        print(f"Detected faces: {len(boxes) if boxes is not None else 0}")
-        print("Emotions:", emotions)
-
-    elif action == '2':
-        video_path = input("Enter the path to the video file: ")
-        detector.process_video(video_path)
-
-    elif action == '3':
-        print("Starting webcam feed. Press 'q' to quit.")
-        detector.process_webcam()
-
+            print("❌ Failed to verify saved result")
+            return False
     else:
-        print("Invalid action selected.")
+        print(f"❌ Image analysis failed: {response.status_code}")
+        print(response.text)
+        return False
+
+def test_get_all_results():
+    """Test retrieving all results"""
+    response = requests.get(f"{BASE_URL}/api/results")
+    
+    if response.status_code == 200:
+        results = response.json().get('results', [])
+        print(f"✅ Retrieved {len(results)} results from API")
+        
+        # Display most recent results
+        for result in results[:3]:
+            print(f"- {result.get('timestamp')}: {result.get('summary')}")
+        
+        return True
+    else:
+        print(f"❌ Failed to retrieve results: {response.status_code}")
+        print(response.text)
+        return False
+
+def main():
+    # Start the test suite
+    print("🧪 Running API tests...\n")
+    
+    # Test the root endpoint to make sure API is running
+    try:
+        response = requests.get(BASE_URL)
+        if response.status_code == 200:
+            print("✅ API is running")
+        else:
+            print("❌ API returned unexpected status code")
+            return
+    except requests.exceptions.ConnectionError:
+        print("❌ API is not running. Please start the server first.")
+        return
+    
+    # Run individual tests
+    test_image_analysis()
+    test_get_all_results()
+    
+    print("\n🧪 Tests completed!")
+
+if __name__ == "__main__":
+    main()

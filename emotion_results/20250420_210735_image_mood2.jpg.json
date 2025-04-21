@@ -1,0 +1,33 @@
+{
+  "id": "20250420_210735",
+  "timestamp": "2025-04-20T21:07:35.855537",
+  "source_type": "image",
+  "source_name": "C:\\Users\\pranu\\Downloads\\mood2.jpg",
+  "summary": "Primary emotion detected: angry (51.8%)",
+  "results": {
+    "top_emotions": [
+      [
+        "angry",
+        51.789313341461025
+      ],
+      [
+        "neutral",
+        30.748563319615922
+      ],
+      [
+        "sad",
+        14.473299446904726
+      ]
+    ],
+    "all_emotions": {
+      "angry": 51.789313341461025,
+      "disgust": 0.0022099678156656394,
+      "fear": 2.770597157407146,
+      "happy": 0.20973700858062402,
+      "sad": 14.473299446904726,
+      "surprise": 0.006273455053565794,
+      "neutral": 30.748563319615922
+    }
+  },
+  "thumbnail": "thumbnails/20250420_210735_thumbnail.jpg"
+}
