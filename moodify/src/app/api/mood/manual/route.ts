@@ -32,6 +32,47 @@ async function getMoodFromChatGPT(input: string): Promise<string[]> {
   }
 }
 
+interface MoodEntry {
+  userId: ObjectId;
+  username: string;
+  description: string;
+  mood: string;
+  categories: string[];
+  source: string;
+  timestamp: Date;
+}
+
+async function updateTopMoods(db: any, userId: string) {
+  const moodsCollection = db.collection('moods');
+  
+  // Get all moods for the user, sorted by timestamp descending
+  const userMoods = await moodsCollection
+    .find({ userId: new ObjectId(userId) })
+    .sort({ timestamp: -1 })
+    .toArray();
+
+  // Calculate mood frequencies
+  const moodFrequencies = userMoods.reduce((acc: { [key: string]: number }, mood: MoodEntry) => {
+    const moodCategory = mood.mood;
+    acc[moodCategory] = (acc[moodCategory] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Sort moods by frequency and get top 3
+  const topMoods = Object.entries(moodFrequencies)
+    .sort(([, a], [, b]) => (b as number) - (a as number))
+    .slice(0, 3)
+    .map(([mood]) => mood);
+
+  // Update user's top moods
+  await db.collection('users').updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { topMoods } }
+  );
+
+  return topMoods;
+}
+
 export async function POST(request: Request) {
   let client;
   
@@ -96,6 +137,9 @@ export async function POST(request: Request) {
       }
     );
 
+    // Calculate and update top moods
+    const topMoods = await updateTopMoods(db, userId);
+
     return NextResponse.json(
       { 
         message: "Mood recorded successfully",
@@ -104,6 +148,7 @@ export async function POST(request: Request) {
         description: moodDescription,
         mood: moodCategories[0],
         moodCategories,
+        topMoods,
         timestamp: new Date(),
         success: true 
       },
