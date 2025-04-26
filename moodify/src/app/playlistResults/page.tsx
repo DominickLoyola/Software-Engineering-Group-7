@@ -9,7 +9,7 @@ import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import moodGenreSongs from "./../songlist/moodGenreSongs.json";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface Song {
     id: number;
@@ -35,6 +35,7 @@ interface MoodMap {
 }
 
 export default function playlistResults() {
+    const router = useRouter();
     const MAX_PLAYLISTS_PER_USER = 5;
     const [userId, setUserId] = useState("");
     const [playlistName, setPlaylistName] = useState("");
@@ -104,6 +105,7 @@ export default function playlistResults() {
       
           if (res.ok) {
             alert("Playlist saved!");
+            router.push('/dashboard');
           } else {
             alert("Error: " + data.error);
           }
