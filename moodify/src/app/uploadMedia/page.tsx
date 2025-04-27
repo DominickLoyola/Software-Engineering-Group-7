@@ -54,26 +54,15 @@ export default function UploadMedia() {
         setError(null);
 
         try {
-            // Create form data to send the file
             const formData = new FormData();
+            formData.append('file', file);
 
-            // Set the correct field name based on the type
-            if (selectedOption === 'image') {
-                formData.append('image', file);
-            } else if (selectedOption === 'video') {
-                formData.append('video', file);
-            }
-
-            console.log(formData);
-
-            // Determine the endpoint based on selectedOption
             const endpoint = selectedOption === 'image'
-                ? 'http://localhost:3001/api/analyze/image'
-                : 'http://localhost:3001/api/analyze/video';
+                ? 'http://localhost:8000/analyze-image'
+                : 'http://localhost:8000/analyze-video';
 
             console.log(`Uploading ${selectedOption} to ${endpoint}`);
 
-            // Make the API call
             const response = await fetch(endpoint, {
                 method: 'POST',
                 body: formData,
@@ -86,16 +75,22 @@ export default function UploadMedia() {
             const data = await response.json();
             console.log("API Response:", data);
 
-            if (data.status === 'success') {
+            if (data.top_emotions || data.weighted_emotions) {
                 setAnalysisResult(data);
 
-                // Store result in localStorage to share with results page
                 localStorage.setItem('emotionAnalysisResult', JSON.stringify(data));
 
-                // Navigate to results page
-                router.push("/aiResults");
+                let detectedMood = 'neutral';
+
+                if (data.top_emotions && data.top_emotions.length > 0) {
+                    detectedMood = data.top_emotions[0][0];
+                } else if (data.weighted_emotions && Object.keys(data.weighted_emotions).length > 0) {
+                    detectedMood = Object.entries(data.weighted_emotions)[0][0];
+                }
+
+                router.push(`/aiResults?mood=${encodeURIComponent(detectedMood)}`);
             } else {
-                setError(data.error || "Unknown error occurred");
+                setError("No emotions detected or bad response.");
             }
         } catch (err) {
             console.error("Upload failed:", err);
@@ -104,6 +99,7 @@ export default function UploadMedia() {
             setIsLoading(false);
         }
     };
+
 
     // Render loading state, error, or results if available
     const renderStatus = () => {
@@ -200,24 +196,6 @@ export default function UploadMedia() {
                             <h2 style={{ fontSize: '1.5rem', color: '#254D32', fontFamily: "'Actor', sans-serif" }}>Image Upload</h2>
                         </div>
 
-                        {/* Camera */}
-                        <div onClick={() => handleOptionSelect('camera')} style={{ cursor: 'pointer', textAlign: 'center' }}>
-                            <div style={{
-                                width: '240px',
-                                height: '240px',
-                                backgroundColor: '#69B578',
-                                borderRadius: '5px',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                marginBottom: '20px',
-                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-                                border: selectedOption === 'camera' ? '3px solid #254D32' : 'none'
-                            }}>
-                                <CiCamera color='#181D27' size={150} />
-                            </div>
-                            <h2 style={{ fontSize: '1.5rem', color: '#254D32', fontFamily: "'Actor', sans-serif" }}>Camera</h2>
-                        </div>
                     </div>
 
                     {/* File Selected Indicator */}
