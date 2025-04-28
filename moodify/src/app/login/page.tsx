@@ -40,15 +40,14 @@ export default function Login() {
         setError(data.message);
         return;
       }
-
-      // Store all user data in sessionStorage
+      
       sessionStorage.setItem('moodifyUser', JSON.stringify({
         userId: data.userId,
         username: data.username,
         joinDate: data.joinDate,
         topMoods: data.topMoods
       }));
-      
+
       router.push('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
@@ -65,7 +64,13 @@ export default function Login() {
       <main className={styles.main}>
         <div className={styles.userAuth}>
           <h1>Login</h1>
-          {error && <p style={{ color: '#b3362d', marginBottom: '15px', textAlign: 'center' }}>{error}</p>}
+
+          {error && (
+            <p style={{ color: '#b3362d', marginBottom: '20px', textAlign: 'center' }}>
+              {error}
+            </p>
+          )}
+
           <div className={styles.form}>
             <div className={styles.inputSet}>
               <label style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>Username</label>
@@ -80,6 +85,7 @@ export default function Login() {
                 <p style={{ color: '#b3362d', marginTop: '5px' }}>Please enter username</p>
               )}
             </div>
+
             <div className={styles.inputSet}>
               <label style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>Password</label>
               <input
@@ -93,9 +99,7 @@ export default function Login() {
                 <p style={{ color: '#b3362d', marginTop: '5px' }}>Please enter password</p>
               )}
             </div>
-            {error && username && password && (
-              <p style={{ color: '#b3362d', margin: '10px 0' }}>{error}</p>
-            )}
+
             <button 
               onClick={handleLogin} 
               className={styles.loginSignupButton}
@@ -105,10 +109,11 @@ export default function Login() {
             </button>
           </div>
         </div>
+
         <p className={styles.accountDescription}>
-            Don't have an account?{' '}
-            <Link href="/signup" style={{ textDecoration: 'underline' }}>Sign Up</Link>
-          </p>
+          Don't have an account?{' '}
+          <Link href="/signup" style={{ textDecoration: 'underline' }}>Sign Up</Link>
+        </p>
       </main>
     </div>
   );
