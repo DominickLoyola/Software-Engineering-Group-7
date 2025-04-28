@@ -9,6 +9,9 @@
 //creates an edit account button that turns the username and password into text boxes
 //then accesses the users info and changes it to the data typed in the boxes
 
+// code written by Rishna Renikunta and Chris Kennedy
+// use case: view and edit account
+
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -29,10 +32,7 @@ interface UserData {
 export default function ViewAccount() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState({
-    username: '',
-    password: ''
-  });
+  const [editData, setEditData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -67,6 +67,12 @@ export default function ViewAccount() {
     setError('');
   };
 
+  const validatePassword = (password: string) => {
+    const hasLetter = /[a-zA-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    return password.length >= 6 && hasLetter && hasNumber;
+  };
+
   const handleSave = async () => {
     if (!userData) {
       setError('No user data available');
@@ -78,15 +84,18 @@ export default function ViewAccount() {
       return;
     }
 
+    if (editData.password && !validatePassword(editData.password)) {
+      setError('Password must be at least 6 characters and contain at least one letter and one number.');
+      return;
+    }
+
     setIsLoading(true);
     setError('');
 
     try {
       const response = await fetch('/api/updateUser', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: userData._id,
           username: editData.username,
@@ -100,7 +109,11 @@ export default function ViewAccount() {
         throw new Error(result.message || 'Failed to update profile');
       }
 
-      // Update session storage with new username
+      if (result.usernameTaken) {
+        setError('That username is already taken. Please choose a different one.');
+        return;
+      }
+
       const currentUserData = JSON.parse(sessionStorage.getItem('moodifyUser') || '{}');
       sessionStorage.setItem('moodifyUser', JSON.stringify({
         ...currentUserData,
@@ -111,12 +124,14 @@ export default function ViewAccount() {
         ...userData,
         username: editData.username,
       });
-      
-      setIsEditing(false);
-      setError('✓ Profile updated successfully');
 
-      // Redirect to dashboard to see the changes
-      router.push('/dashboard');
+      setError('✓ Profile updated successfully');
+      setIsEditing(false);
+
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 2000);
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update profile');
     } finally {
@@ -141,11 +156,11 @@ export default function ViewAccount() {
       <main className={styles.main}>
         <div className={styles.viewAccountContainer}>
           <div className={styles.imageUpload}>
-            <HiOutlineUser color='#fefef4' size={200} />
+            <HiOutlineUser color="#fefef4" size={200} />
           </div>
-          
+
           {error && (
-            <div className={error.startsWith('✓') ? styles.successMessage : styles.errorMessage}>
+            <div style={{ marginTop: '1rem' }} className={error.startsWith('✓') ? styles.successMessage : styles.errorMessage}>
               {error}
             </div>
           )}
@@ -159,7 +174,7 @@ export default function ViewAccount() {
                     type="text"
                     className={styles.accountInput}
                     value={editData.username}
-                    onChange={(e) => setEditData({...editData, username: e.target.value})}
+                    onChange={(e) => setEditData({ ...editData, username: e.target.value })}
                     disabled={isLoading}
                   />
                 ) : (
@@ -168,6 +183,7 @@ export default function ViewAccount() {
                   </div>
                 )}
               </div>
+
               <div className={styles.inputSet}>
                 <label style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Password</label>
                 {isEditing ? (
@@ -175,7 +191,7 @@ export default function ViewAccount() {
                     type="password"
                     className={styles.accountInput}
                     value={editData.password}
-                    onChange={(e) => setEditData({...editData, password: e.target.value})}
+                    onChange={(e) => setEditData({ ...editData, password: e.target.value })}
                     placeholder="Leave blank to keep current"
                     disabled={isLoading}
                   />
@@ -186,6 +202,7 @@ export default function ViewAccount() {
                 )}
               </div>
             </div>
+
             <div className={styles.rowAccount}>
               <div className={styles.inputSet}>
                 <label style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Top Moods</label>
@@ -193,6 +210,7 @@ export default function ViewAccount() {
                   {userData.topMoods?.join(', ') || 'None'}
                 </div>
               </div>
+
               <div className={styles.inputSet}>
                 <label style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Member Since</label>
                 <div className={styles.accountInput}>
@@ -205,21 +223,23 @@ export default function ViewAccount() {
               </div>
             </div>
           </div>
+
           <div className={styles.buttonRow}>
             <Link className={styles.exitButton} href="/dashboard">
               Exit
             </Link>
+
             {isEditing ? (
               <>
                 <button 
-                  className={styles.exitButton} 
+                  className={styles.exitButton}
                   onClick={handleEditToggle}
                   disabled={isLoading}
                 >
                   Cancel
                 </button>
                 <button 
-                  className={styles.editButton} 
+                  className={styles.editButton}
                   onClick={handleSave}
                   disabled={isLoading}
                 >
@@ -233,13 +253,14 @@ export default function ViewAccount() {
               </>
             ) : (
               <button 
-                className={styles.editButton} 
+                className={styles.editButton}
                 onClick={handleEditToggle}
               >
                 Edit Details
               </button>
             )}
           </div>
+
         </div>
       </main>
     </div>
