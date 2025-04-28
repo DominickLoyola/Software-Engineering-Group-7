@@ -28,11 +28,20 @@ export async function POST(request: Request) {
       );
     }
 
+    if (password) {
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+      if (!passwordRegex.test(password)) {
+        return NextResponse.json(
+          { success: false, message: "Password must be at least 6 characters long and contain at least one letter and one number" },
+          { status: 400 }
+        );
+      }
+    }
+
     client = await MongoClient.connect(uri);
     const db = client.db(dbName);
     const usersCollection = db.collection('users');
 
-    // First get the existing user data
     const existingUser = await usersCollection.findOne({ _id: new ObjectId(userId) });
     if (!existingUser) {
       return NextResponse.json(
@@ -41,10 +50,19 @@ export async function POST(request: Request) {
       );
     }
 
-    // Prepare update data preserving mood-related fields
+    const duplicateUser = await usersCollection.findOne({
+      username: username,
+      _id: { $ne: new ObjectId(userId) }
+    });
+    if (duplicateUser) {
+      return NextResponse.json(
+        { success: false, message: "Username is already taken" },
+        { status: 409 }
+      );
+    }
+
     const updateData: any = {
       username,
-      // Preserve existing mood-related fields
       currentMood: existingUser.currentMood || null,
       lastActivity: existingUser.lastActivity || null,
       lastMoodId: existingUser.lastMoodId || null,
@@ -57,7 +75,7 @@ export async function POST(request: Request) {
       updateData.password = password;
     }
 
-    const result = await usersCollection.updateOne(
+    await usersCollection.updateOne(
       { _id: new ObjectId(userId) },
       { $set: updateData }
     );
