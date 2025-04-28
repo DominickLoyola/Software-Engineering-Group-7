@@ -1,5 +1,6 @@
 import torch
 import cv2
+import sys
 import numpy as np
 from PIL import Image, UnidentifiedImageError
 from collections import defaultdict, Counter
@@ -8,6 +9,10 @@ from deepface import DeepFace
 import os
 import time
 import requests
+
+if sys.platform == "darwin":
+    cv2.imshow = lambda *args, **kwargs: None
+    cv2.waitKey = lambda *args, **kwargs: -1
 
 class FacialDetector:
     def __init__(self, device=None):

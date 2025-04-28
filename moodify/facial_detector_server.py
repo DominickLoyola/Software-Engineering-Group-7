@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import os
+os.environ["OBJC_DISABLE_INITIALIZE_FORK_SAFETY"] = "YES"
 from PIL import Image
 from facial_detector import FacialDetector
 

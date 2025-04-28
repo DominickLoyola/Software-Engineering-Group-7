@@ -85,7 +85,9 @@ export default function UploadMedia() {
                 if (data.top_emotions && data.top_emotions.length > 0) {
                     detectedMood = data.top_emotions[0][0];
                 } else if (data.weighted_emotions && Object.keys(data.weighted_emotions).length > 0) {
-                    detectedMood = Object.entries(data.weighted_emotions)[0][0];
+                    const sortedEmotions = Object.entries(data.weighted_emotions as Record<string, number>)
+                        .sort((a, b) => b[1] - a[1]);
+                    detectedMood = sortedEmotions[0][0];
                 }
 
                 router.push(`/aiResults?mood=${encodeURIComponent(detectedMood)}`);
