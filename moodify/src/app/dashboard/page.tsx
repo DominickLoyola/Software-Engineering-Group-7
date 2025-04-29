@@ -29,11 +29,11 @@ export default function Dashboard() {
             // Fetch dashboard data (includes user info and recent playlists)
             const dashboardResponse = await fetch(`/api/dashboard?userId=${userId}`);
             const dashboardData = await dashboardResponse.json();
-            
+
             if (!dashboardResponse.ok) {
                 throw new Error(dashboardData.message || 'Failed to fetch dashboard data');
             }
-            
+
             setUsername(dashboardData.dashboardData.username);
             setPlaylists(dashboardData.dashboardData.recentPlaylists || []);
         } catch (err) {
@@ -150,16 +150,7 @@ export default function Dashboard() {
                         <p style={{ textAlign: 'center', marginBottom: '30px', fontSize: '1.1rem' }}>
                             Analyze your mood instantly! Upload a photo to generate the perfect playlist.
                         </p>
-                        <button onClick={handleMoodDetection} style={{
-                            backgroundColor: '#FBFEF4',
-                            color: '#254D32',
-                            padding: '15px 30px',
-                            borderRadius: '30px',
-                            border: 'none',
-                            fontSize: '1.2rem',
-                            fontWeight: 'bold',
-                            cursor: 'pointer'
-                        }}>
+                        <button onClick={handleMoodDetection} className={styles.buttonHoverEffect}>
                             Start Mood Detection
                         </button>
                     </div>
@@ -181,18 +172,9 @@ export default function Dashboard() {
                                 playlists.map((playlist) => (
                                     <div key={playlist.id} className={styles.specificPlaylist}>
                                         <p style={{ fontSize: '1.3rem' }}>{playlist.name}</p>
-                                        <Link 
+                                        <Link
                                             href={`/playlistExpanded/${playlist.id}`}
-                                            style={{
-                                                backgroundColor: '#FBFEF4',
-                                                color: '#254D32',
-                                                padding: '8px 20px',
-                                                borderRadius: '20px',
-                                                border: 'none',
-                                                fontSize: '0.9rem',
-                                                cursor: 'pointer',
-                                                textDecoration: 'none'
-                                            }}
+                                            className={styles.expandButtonHover}
                                         >
                                             expand
                                         </Link>
@@ -233,16 +215,7 @@ export default function Dashboard() {
                         }}>
                             Describe how you feel, and we'll match you with the best playlist for your mood.
                         </p>
-                        <button onClick={handleManualMoodInput} style={{
-                            backgroundColor: '#FBFEF4',
-                            color: '#254D32',
-                            padding: '15px 30px',
-                            borderRadius: '30px',
-                            border: 'none',
-                            fontSize: '1.2rem',
-                            fontWeight: 'bold',
-                            cursor: 'pointer'
-                        }}>
+                        <button onClick={handleManualMoodInput} className={styles.buttonHoverEffect}>
                             Enter Mood Manually
                         </button>
                     </div>

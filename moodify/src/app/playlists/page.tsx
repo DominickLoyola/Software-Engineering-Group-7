@@ -182,7 +182,7 @@ export default function PlaylistsPage() {
                                                 className={styles.playlistTitleInput}
                                             />
                                         ) : (
-                                            <h2 className={styles.playlistTitle}>{playlist.name}</h2>
+                                            <h3 className={styles.playlistTitle}>{playlist.name}</h3>
                                         )}
                                         <div className={styles.iconGroupNew}>
                                             {editingId === playlist._id ? (

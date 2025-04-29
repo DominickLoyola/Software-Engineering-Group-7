@@ -545,6 +545,20 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-family: 'Actor', sans-serif;
+
+}
+
+.playlistCardNew:hover {
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #e9ecdd;
+  cursor: pointer;
 }
 
 .playlistHeaderNew {
@@ -606,7 +620,8 @@
   display: flex;
   align-items: center;
   padding: 12px 15px;
-  background-color: #f8f5f0; /* Beige-ish background */
+  background-color: #f8f5f0;
+  /* Beige-ish background */
   border-radius: 8px;
   transition: background-color 0.2s;
 }
@@ -690,4 +705,40 @@
 
 .whiteContainer {
   padding-top: 30px;
+}
+
+.buttonHoverEffect {
+  background-color: #FBFEF4;
+  color: #254D32;
+  padding: 15px 30px;
+  border-radius: 30px;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.buttonHoverEffect:hover {
+  background-color: #254D32;
+  color: #FBFEF4;
+}
+
+.expandButtonHover {
+  background-color: #FBFEF4;
+  color: #254D32;
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  text-align: center;
+}
+
+.expandButtonHover:hover {
+  background-color: #254D32;
+  color: #FBFEF4;
 }
