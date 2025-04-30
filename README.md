@@ -25,6 +25,8 @@ Moodify is an ai-powered mood-based application that analyzes facial expressions
 
 # How to Set Up Moodify Locally:
 
+**Do all of this in the VS code terminal**
+
 **Setting up the Chat GPT API:**
 
 1. **Install OpenAI SDK**
@@ -44,6 +46,42 @@ Moodify is an ai-powered mood-based application that analyzes facial expressions
 * GPT API calls won't work without credits
 * Go to https://platform.openai.com/settings/organization/billing/overview
 * Make sure your account has active credit or billing set up 
-* 1 dollar should be enough for now
+* 5 dollars is the minimum amount
 
+**Setting up AI Libraries:**
 
+* import torch
+* import cv2
+* import numpy as np
+* from PIL import Image, UnidentifiedImageError
+* from collections import defaultdict, Counter
+* from facenet_pytorch import MTCNN, InceptionResnetV1
+* from deepface import DeepFace
+* import os
+* import time
+* import json
+* from flask import Flask, request, jsonify, send_from_directory
+* from datetime import datetime
+* from flask_cors import CORS
+
+**Running Flask Server:**
+* Navigate to project directory: cd Moodify
+* Start the facial detection server: python facial_detector_server.py
+* Start the result receiver server: python result_receiver.py
+* To avoid CORS (Cross-Origin Resource Sharing) issues while testing locally, please install this Chrome extension: https://chromewebstore.google.com/detail/moesif-origincors-changer/digfbfaphojjndkpccljibejjbppifbc?hl=en-US
+* Then make sure the enable cors option is enabled
+
+**Commands to run to download react and next js:**
+   * npm install Next.js
+   * npm install React
+
+**Put this in the .env.local file:**
+MONGODB_URI=mongodb+srv://chrispkennedy10:JZlbet7nfucTgufM@userinfo.1gvlzhd.mongodb.net/?retryWrites=true&w=majority&appName=userinfo
+MONGODB_DB=userinfo
+* Make sure these libraries are installed and ready to use before running the application
+
+**TO RUN**
+
+* git checkout backend
+* cd Moodify
+* npm run dev
