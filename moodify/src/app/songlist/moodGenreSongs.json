@@ -51,12 +51,12 @@
             { "id": 36, "name": "Back to December", "artist": "Taylor Swift", "link": "https://www.youtube.com/watch?v=QUwxKWT6m7U" }
         ],
         "rap": [
-            { "id": 37, "name": "Jocelyn Flores", "artist": "XXXTENTACION", "link": "https://www.youtube.com/watch?v=trG6AztzIsk" },
+            { "id": 37, "name": "Jocelyn Flores", "artist": "XXXTENTACION", "link": "https://youtu.be/FAucVNRx_mU" },
             { "id": 38, "name": "Love The Way You Lie", "artist": "Eminem ft. Rihanna", "link": "https://www.youtube.com/watch?v=uelHwf8o7_U" },
             { "id": 39, "name": "Mockingbird", "artist": "Eminem", "link": "https://www.youtube.com/watch?v=S9bCLPwzSC0" },
-            { "id": 40, "name": "How Could You Leave Us", "artist": "NF", "link": "https://www.youtube.com/watch?v=w41h83nsC80" },
-            { "id": 41, "name": "Be Careful", "artist": "Cardi B", "link": "https://www.youtube.com/watch?v=abnE8D_rh2g" },
-            { "id": 42, "name": "I Fall Apart", "artist": "Post Malone", "link": "https://www.youtube.com/watch?v=0g2cnu3Z9Yg" }
+            { "id": 40, "name": "How Could You Leave Us", "artist": "NF", "link": "https://www.youtube.com/watch?v=B9tqvCYlZSQ" },
+            { "id": 41, "name": "Be Careful", "artist": "Cardi B", "link": "https://www.youtube.com/watch?v=l3uG4T8pJfw" },
+            { "id": 42, "name": "I Fall Apart", "artist": "Post Malone", "link": "https://youtu.be/nqfVoTMEosw?si=BaqQharCyb61alKK" }
         ],
         "rnb": [
             { "id": 43, "name": "It’s So Hard to Say Goodbye", "artist": "Boyz II Men", "link": "https://www.youtube.com/watch?v=0m_giioppT4" },
