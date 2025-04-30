@@ -76,6 +76,9 @@ Moodify is an ai-powered mood-based application that analyzes facial expressions
    * npm install React
 
 **Put this in the .env.local file:**
+
+(if the .env.local file doesn't exist create it under the modify directory)
+
 MONGODB_URI=mongodb+srv://chrispkennedy10:JZlbet7nfucTgufM@userinfo.1gvlzhd.mongodb.net/?retryWrites=true&w=majority&appName=userinfo
 MONGODB_DB=userinfo
 * Make sure these libraries are installed and ready to use before running the application
