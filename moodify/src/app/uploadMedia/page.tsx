@@ -90,6 +90,24 @@ export default function UploadMedia() {
                     detectedMood = sortedEmotions[0][0];
                 }
 
+                // Store the detected mood in the database
+                const storedData = sessionStorage.getItem('moodifyUser');
+                if (storedData) {
+                    const userData = JSON.parse(storedData);
+                    const storeResponse = await fetch('/api/mood/ai', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            userId: userData.userId,
+                            detectedMood: detectedMood
+                        })
+                    });
+
+                    if (!storeResponse.ok) {
+                        console.error('Failed to store mood in database:', await storeResponse.text());
+                    }
+                }
+
                 router.push(`/aiResults?mood=${encodeURIComponent(detectedMood)}`);
             } else {
                 setError("No emotions detected or bad response.");
