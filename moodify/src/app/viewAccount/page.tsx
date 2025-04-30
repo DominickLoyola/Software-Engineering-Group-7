@@ -57,6 +57,31 @@ export default function ViewAccount() {
         username: parsedData.username,
         password: ''
       });
+
+      // Fetch latest top moods
+      const fetchTopMoods = async () => {
+        try {
+          const response = await fetch('/api/topMoods', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: parsedData.userId })
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.topMoods) {
+              setUserData(prev => ({
+                ...prev!,
+                topMoods: data.topMoods
+              }));
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching top moods:', error);
+        }
+      };
+
+      fetchTopMoods();
     } catch (error) {
       router.push('/login');
     }
@@ -207,7 +232,9 @@ export default function ViewAccount() {
               <div className={styles.inputSet}>
                 <label style={{ fontWeight: 'bold', fontSize: '1.3rem' }}>Top Moods</label>
                 <div className={styles.accountInput}>
-                  {userData.topMoods?.join(', ') || 'None'}
+                  {userData.topMoods?.slice(0, 2).map(mood => 
+                    mood.charAt(0).toUpperCase() + mood.slice(1)
+                  ).join(', ') || 'None'}
                 </div>
               </div>
 
